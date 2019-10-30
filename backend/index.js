@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 connection.connect()
 app.use(cors())
 
-const QRY = 'SELECT * FROM emp;'
+const QRY = 'SELECT * FROM '//user;'
 
 
 
@@ -30,8 +30,8 @@ app.get('/mysql-test', (req, res) => {
     })
   })
 
-app.get('/full-test', (req, res) => {
-  connection.query(QRY, (err, rows, fields) => {
+app.get('/full-test/:table', (req, res) => {
+  connection.query(QRY + req.params.table, (err, rows, fields) => {
     if(err) {console.log(err)}
     res.send(rows)
   })
