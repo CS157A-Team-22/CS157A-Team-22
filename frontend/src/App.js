@@ -1,4 +1,5 @@
 import React from 'react';
+import NewUserForm from './NewUserForm';
 import './App.css';
 
 class App extends React.Component {
@@ -70,6 +71,7 @@ class App extends React.Component {
         <button onClick={this.testFull.bind(this, 'hold')}>Get Holds!</button>
         <button onClick={this.testFull.bind(this, 'wishlist')}>Get Wishlist!</button>
         <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/>
+        <NewUserForm />
         {this.displayRows()}
       </div>
     );

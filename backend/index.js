@@ -11,8 +11,10 @@ var connection = mysql.createConnection({
   database: 'cs157a'
 })
 
-connection.connect()
-app.use(cors())
+connection.connect();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded());
 
 const QRY = 'SELECT * FROM '//user;'
 
@@ -35,6 +37,17 @@ app.get('/full-test/:table', (req, res) => {
     if(err) {console.log(err)}
     res.send(rows)
   })
+})
+
+
+
+app.post('/submit-new-user', (req, res) => {
+  console.log(req.body);
+  let newUser = req.body
+  newUser.libraryCardNumber = 30;
+  console.log(newUser)
+  connection.query('INSERT INTO user SET ?', newUser);
+  res.status(204).send()
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
