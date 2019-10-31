@@ -86,9 +86,26 @@ app.post('/submit-new-user', (req, res) => {
       res.status(400).send({error: 'user already exists'});
     } else {
       connection.query('INSERT INTO user SET ?', newUser);
-      res.status(200).send({status: newUser.email + 'registered'});
+      res.status(200).send({status: newUser.email + ' registered'});
     }
   });
 })
 
-app.listen(port, () => console.log(`Library Management app listening on port ${port}!`))
+// log in
+// TODO hash passwords, create cookies/sessions
+app.post('/login', (req, res) => {
+  connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
+    if (row[0]) {
+      console.log(row[0]);
+      if (row[0].password === req.body.password) {
+        res.status(200).json("valid user");
+      } else {
+        res.status(400).json({error: 'Invalid User Credentials'});
+      }
+    } else {
+      res.status(400).json({error: 'Invalid User Credentials'});
+    }
+  });
+})
+
+app.listen(port, () => console.log(`Library Management app listening on port ${port}!`));

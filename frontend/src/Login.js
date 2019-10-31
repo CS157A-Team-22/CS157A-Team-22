@@ -18,7 +18,7 @@ class NewUserForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    let url = "http://localhost:5000/submit-new-user"
+    let url = "http://localhost:5000/login"
   
     // TODO validate password 
     let { email, password } = this.state;
@@ -26,9 +26,9 @@ class NewUserForm extends Component {
       email,
       password
     }).then( res => {
-      console.log("sign up response", res);
+      console.log("login response", res);
     }).catch(err => {
-      console.log("sign up error", err);
+      console.log("login error", err);
     })
     console.log("form submitted!");
   }
