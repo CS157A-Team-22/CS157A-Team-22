@@ -1,6 +1,9 @@
 import React from 'react';
 import NewUserForm from './NewUserForm';
+import Item from './Item';
+import ItemViewer from './ItemViewer'
 import './App.css';
+
 
 class App extends React.Component {
 
@@ -42,7 +45,7 @@ class App extends React.Component {
 
 
   displayRows() {
-    console.log(this.state.rows)
+    //console.log(this.state.rows)
     return (
       <table><tbody>
         {this.state.rows.map( (row, index) => {
@@ -57,10 +60,12 @@ class App extends React.Component {
       </tbody></table>)
   }
 
+
+
+
   render() {
     return (
       <div className="App">
-        <header className="App-header"></header>
         <button onClick={this.testFull.bind(this, 'user')}>Get Users!</button>
         <button onClick={this.testFull.bind(this, 'customer')}>Get Customers!</button>
         <button onClick={this.testFull.bind(this, 'librarian')}>Get Librarians!</button><br/>
@@ -73,6 +78,7 @@ class App extends React.Component {
         <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/>
         <NewUserForm />
         {this.displayRows()}
+        <ItemViewer items={this.state.rows}/>
       </div>
     );
   }
