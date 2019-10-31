@@ -46,7 +46,7 @@ class LandingPage extends React.Component {
 
   render() {
     return (
-      <div className="App">
+      <>
         <button onClick={this.getTableData.bind(this, 'user', false)}>Get Users!</button>
         <button onClick={this.getTableData.bind(this, 'customer', false)}>Get Customers!</button>
         <button onClick={this.getTableData.bind(this, 'librarian', false)}>Get Librarians!</button><br/>
@@ -59,7 +59,7 @@ class LandingPage extends React.Component {
         <button onClick={this.getTableData.bind(this, 'addtoinventory', false)}>Get addToInventory!</button><br/><br/>
         
         {this.state.cards ? <ItemViewer items={this.state.rows} />: this.displayRows()}
-      </div>
+      </>
     );
   }
 

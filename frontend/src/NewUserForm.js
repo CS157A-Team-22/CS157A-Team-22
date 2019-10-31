@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FormControl, Input, InputLabel, FormGroup} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -33,6 +34,7 @@ class NewUserForm extends Component {
       password
     }).then( res => {
       console.log("sign up response", res);
+      this.props.history.push('/items');
     }).catch(err => {
       console.log("sign up error", err);
     })
@@ -133,5 +135,4 @@ class NewUserForm extends Component {
   }
 
 }
-
-export default NewUserForm;
+export default withRouter(NewUserForm);
