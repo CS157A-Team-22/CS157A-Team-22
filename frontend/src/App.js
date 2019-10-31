@@ -1,6 +1,24 @@
 import React from 'react';
 import NewUserForm from './NewUserForm';
+import { withStyles } from '@material-ui/core/styles';
+
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Login from './Login';
 import './App.css';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    height: 140,
+    width: 100,
+  },
+  control: {
+    padding: theme.spacing(2),
+  },
+});
 
 class App extends React.Component {
 
@@ -9,6 +27,7 @@ class App extends React.Component {
     this.state = {data: "Nothing yet", rows: []};
   }
 
+  
 
   getData() {
     let url = "http://127.0.0.1:5000/react-test"
@@ -59,23 +78,43 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header"></header>
-        <button onClick={this.testFull.bind(this, 'user')}>Get Users!</button>
-        <button onClick={this.testFull.bind(this, 'customer')}>Get Customers!</button>
-        <button onClick={this.testFull.bind(this, 'librarian')}>Get Librarians!</button><br/>
-        <button onClick={this.testFull.bind(this, 'item')}>Get Items!</button>
-        <button onClick={this.testFull.bind(this, 'book')}>Get Books!</button>
-        <button onClick={this.testFull.bind(this, 'movie')}>Get Movies!</button><br/>
-        <button onClick={this.testFull.bind(this, 'borrows')}>Get Borrows!</button>
-        <button onClick={this.testFull.bind(this, 'hold')}>Get Holds!</button>
-        <button onClick={this.testFull.bind(this, 'wishlist')}>Get Wishlist!</button>
-        <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/>
-        <NewUserForm />
-        {this.displayRows()}
-      </div>
+      // <div className="App">
+      //   <header className="App-header"></header>
+      //   <button onClick={this.testFull.bind(this, 'user')}>Get Users!</button>
+      //   <button onClick={this.testFull.bind(this, 'customer')}>Get Customers!</button>
+      //   <button onClick={this.testFull.bind(this, 'librarian')}>Get Librarians!</button><br/>
+      //   <button onClick={this.testFull.bind(this, 'item')}>Get Items!</button>
+      //   <button onClick={this.testFull.bind(this, 'book')}>Get Books!</button>
+      //   <button onClick={this.testFull.bind(this, 'movie')}>Get Movies!</button><br/>
+      //   <button onClick={this.testFull.bind(this, 'borrows')}>Get Borrows!</button>
+      //   <button onClick={this.testFull.bind(this, 'hold')}>Get Holds!</button>
+      //   <button onClick={this.testFull.bind(this, 'wishlist')}>Get Wishlist!</button>
+      //   <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/>
+      //   <Login />
+      //   {this.displayRows()}
+      // </div>
+      <>
+        {this.renderGrid()}
+      </>
+    );
+  }
+
+  renderGrid = () => {
+    const { classes, spacing } = this.props;
+    let imgSrc = "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1753&q=80";
+    return (
+      <Grid container className={classes.root} spacing={0} style={{maxHeight: '100%'}}>
+        <Grid item xs={6} style={{backgroundColor: '#fcf2c0'}}>
+          <Login/>
+        </Grid>
+        <Grid item xs={6} style={{overflow: 'hidden', maxHeight: '100 * vh'}}>
+          <div >
+            <img src={imgSrc} style={{maxHeight: '100%'}}/>
+          </div>
+        </Grid>
+      </Grid>
     );
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
