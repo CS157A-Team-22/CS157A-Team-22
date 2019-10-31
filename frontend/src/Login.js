@@ -43,13 +43,14 @@ class NewUserForm extends Component {
     return (
       <Container maxWidth="sm" style=
         {{ 
-            padding: '3%', 
-            margin: '50% 10px', 
-            height: '50%', 
-            backgroundColor: '#fffae3'
+            padding: '8%', 
+            marginTop: '150px',
+            backgroundColor: '#fffae3',
+            minHeight: '50vh'
         }}>
-        <h1 style={{textAlign: 'center'}}> Log in </h1>
-        <p style={{textAlign: 'center'}}> New to library? <Button variant="contained" color="secondary">Sign Up Now!</Button></p>
+        <h1 style={{textAlign: 'center', marginTop: '10px'}}> Log in </h1>
+        <p style={{textAlign: 'center'}}> 
+            New to library? <Button variant="contained" color="secondary" onClick={this.props.handleSignUpClick}>Sign Up Now!</Button></p>
         <form onSubmit={this.handleSubmit} method="post">
           <FormGroup>
             <FormControl>

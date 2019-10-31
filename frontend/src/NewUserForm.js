@@ -48,8 +48,15 @@ class NewUserForm extends Component {
   render() {
     return (
       <>
-      <Container maxWidth="sm">
-        <h1 style={{textAlign: 'center'}}> Register for a new account: </h1>
+      <Container maxWidth="sm" style=
+        {{ 
+            padding: '8%', 
+            marginTop: '150px',
+            backgroundColor: '#fffae3',
+            minHeight: '50vh'
+        }}>
+        <Button color="secondary" onClick={this.props.handleBackClick}>Back</Button>
+        <h1 style={{textAlign: 'center', marginTop: '10px'}}> Register for a new account: </h1>
         <form onSubmit={this.handleSubmit} method="post">
           <FormGroup>
             <FormControl>
@@ -115,7 +122,7 @@ class NewUserForm extends Component {
                 type="submit" 
                 variant="contained" 
                 color="primary"
-                style={{marginTop: '2%'}}> Sign Up
+                style={{margin: '4% 0'}}> Sign Up
               </Button>  
             </FormControl>
           </FormGroup>

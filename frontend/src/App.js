@@ -5,6 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Login from './Login';
+import Item from './Item';
+import ItemViewer from './ItemViewer'
 import './App.css';
 
 const styles = theme => ({
@@ -20,11 +22,17 @@ const styles = theme => ({
   },
 });
 
+
+
 class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {data: "Nothing yet", rows: []};
+    this.state = {
+      data: "Nothing yet", 
+      rows: [],
+      showSignUp: false
+    };
   }
 
   
@@ -61,7 +69,7 @@ class App extends React.Component {
 
 
   displayRows() {
-    console.log(this.state.rows)
+    //console.log(this.state.rows)
     return (
       <table><tbody>
         {this.state.rows.map( (row, index) => {
@@ -76,25 +84,31 @@ class App extends React.Component {
       </tbody></table>)
   }
 
+  toggleSignUpView = () => {
+    this.setState({
+      showSignUp: !this.state.showSignUp
+    });
+  }
+
   render() {
     return (
-      // <div className="App">
-      //   <header className="App-header"></header>
-      //   <button onClick={this.testFull.bind(this, 'user')}>Get Users!</button>
-      //   <button onClick={this.testFull.bind(this, 'customer')}>Get Customers!</button>
-      //   <button onClick={this.testFull.bind(this, 'librarian')}>Get Librarians!</button><br/>
-      //   <button onClick={this.testFull.bind(this, 'item')}>Get Items!</button>
-      //   <button onClick={this.testFull.bind(this, 'book')}>Get Books!</button>
-      //   <button onClick={this.testFull.bind(this, 'movie')}>Get Movies!</button><br/>
-      //   <button onClick={this.testFull.bind(this, 'borrows')}>Get Borrows!</button>
-      //   <button onClick={this.testFull.bind(this, 'hold')}>Get Holds!</button>
-      //   <button onClick={this.testFull.bind(this, 'wishlist')}>Get Wishlist!</button>
-      //   <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/>
-      //   <Login />
-      //   {this.displayRows()}
-      // </div>
       <>
+        {/* <button onClick={this.testFull.bind(this, 'user')}>Get Users!</button>
+        <button onClick={this.testFull.bind(this, 'customer')}>Get Customers!</button>
+        <button onClick={this.testFull.bind(this, 'librarian')}>Get Librarians!</button><br/>
+        <button onClick={this.testFull.bind(this, 'item')}>Get Items!</button>
+        <button onClick={this.testFull.bind(this, 'book')}>Get Books!</button>
+        <button onClick={this.testFull.bind(this, 'movie')}>Get Movies!</button><br/>
+        <button onClick={this.testFull.bind(this, 'borrows')}>Get Borrows!</button>
+        <button onClick={this.testFull.bind(this, 'hold')}>Get Holds!</button>
+        <button onClick={this.testFull.bind(this, 'wishlist')}>Get Wishlist!</button>
+        <button onClick={this.testFull.bind(this, 'addtoinventory')}>Get addToInventory!</button><br/><br/> */}
+        {/* <NewUserForm />
+        {this.displayRows()}
+        <ItemViewer items={this.state.rows}/> */}
         {this.renderGrid()}
+        {/* {!this.state.showSignUp && this.renderLogin()}
+        {this.state.showSignUp && this.renderRegister()} */}
       </>
     );
   }
@@ -103,9 +117,11 @@ class App extends React.Component {
     const { classes, spacing } = this.props;
     let imgSrc = "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1753&q=80";
     return (
-      <Grid container className={classes.root} spacing={0} style={{maxHeight: '100%'}}>
+      <Grid container className={classes.root} spacing={0} style={{maxHeight: '100vh'}}>
         <Grid item xs={6} style={{backgroundColor: '#fcf2c0'}}>
-          <Login/>
+          {/* <Login/> */}
+          {!this.state.showSignUp && this.renderLogin()}
+          {this.state.showSignUp && this.renderRegister()}
         </Grid>
         <Grid item xs={6} style={{overflow: 'hidden', maxHeight: '100 * vh'}}>
           <div >
@@ -115,6 +131,25 @@ class App extends React.Component {
       </Grid>
     );
   }
+
+  renderLogin = () => {
+    return (
+      <div style={{backgroundColor: '#', height: '100vh'}}>
+        <Login
+          handleSignUpClick={this.toggleSignUpView}
+        />
+      </div>
+    );
+  }
+
+  renderRegister = () => {
+    return (
+        <NewUserForm 
+          handleBackClick={this.toggleSignUpView}
+        />
+    )
+  }
+
 }
 
 export default withStyles(styles)(App);
