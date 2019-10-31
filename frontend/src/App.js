@@ -49,7 +49,7 @@ class App extends React.Component {
         text = theText
         console.log("After assignment")
         console.log(text)
-        this.setState({data: text})  
+        this.setState({data: text})
       })
     })
   }
