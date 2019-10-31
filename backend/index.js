@@ -72,7 +72,7 @@ app.post('/add-item', (req, res) => {
 
 // add a new user
 app.post('/submit-new-user', (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const newUser = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -80,9 +80,15 @@ app.post('/submit-new-user', (req, res) => {
     password: req.body.password,
     libraryCardNumber: Math.floor(Math.random() * 10000)  /// ONLY TEMPORARY
   }
-  console.log(newUser)
-  connection.query('INSERT INTO user SET ?', newUser);
-  res.status(204).send()
+  connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${newUser.email}"`, (err, row, fields) => {
+    if (row[0]) {
+      console.log("user already exists", row);
+      res.status(400).send({error: 'user already exists'});
+    } else {
+      connection.query('INSERT INTO user SET ?', newUser);
+      res.status(200).send({status: newUser.email + 'registered'});
+    }
+  });
 })
 
 app.listen(port, () => console.log(`Library Management app listening on port ${port}!`))
