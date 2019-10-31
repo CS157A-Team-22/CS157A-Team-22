@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { FormControl, Input, InputLabel, FormGroup} from '@material-ui/core';
+import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
+
 import axios from 'axios';
 
 class NewUserForm extends Component {
@@ -44,60 +48,79 @@ class NewUserForm extends Component {
   render() {
     return (
       <>
+      <Container maxWidth="sm">
+        <h1 style={{textAlign: 'center'}}> Register for a new account: </h1>
         <form onSubmit={this.handleSubmit} method="post">
-          
-          <label htmlFor="firstName">First Name:</label>
-          <input 
-            type="text" 
-            id="firstName" 
-            name="firstName" 
-            value={this.state.firstName}
-            onChange={this.handleChange}
-            required
-          />
-          
-          <label htmlFor="lastName">Last Name:</label>
-          <input 
-            type="text" 
-            id="lastName" 
-            name="lastName" 
-            value={this.state.lastName}
-            onChange={this.handleChange}
-            required
-          />
+          <FormGroup>
+            <FormControl>
+              <InputLabel htmlFor="firstName">First Name</InputLabel>
+              <Input
+                type="text" 
+                id="firstName" 
+                name="firstName" 
+                value={this.state.firstName}
+                onChange={this.handleChange}
+                required
+              />
+            </FormControl>
 
-          <label htmlFor="email">Email:</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            value={this.state.email}
-            onChange={this.handleChange}
-            required
-          />
+            <FormControl>
+              <InputLabel htmlFor="lastName">Last Name</InputLabel>
+              <Input
+                type="text" 
+                id="lastName" 
+                name="lastName" 
+                value={this.state.lastName}
+                onChange={this.handleChange}
+                required
+              />
+            </FormControl>
 
-          <label htmlFor="password">password:</label>
-          <input 
-            type="password" 
-            id="password" 
-            name="password" 
-            value={this.state.password}
-            onChange={this.handleChange}
-            required
-          />
-         
-          <label htmlFor="passwordConfirmation">password confirmation:</label>
-          <input 
-            type="password" 
-            id="passwordConfirmation" 
-            name="passwordConfirmation" 
-            value={this.state.passwordConfirmation}
-            onChange={this.handleChange}
-            required
-          />
+            <FormControl>
+              <InputLabel htmlFor="email">Email</InputLabel>
+              <Input 
+                type="email" 
+                id="email" 
+                name="email" 
+                value={this.state.email}
+                onChange={this.handleChange}
+                required
+              />
+            </FormControl>
 
-          <button type="submit">Sign Up</button>
+            <FormControl>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input
+                type="password" 
+                id="password" 
+                name="password" 
+                value={this.state.password}
+                onChange={this.handleChange}
+                required
+              />
+            </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="passwordConfirmation">Password Confirmation</InputLabel>
+              <Input 
+                type="password" 
+                id="passwordConfirmation" 
+                name="passwordConfirmation" 
+                value={this.state.passwordConfirmation}
+                onChange={this.handleChange}
+                required
+              />
+            </FormControl>
+            <FormControl>
+              <Button 
+                type="submit" 
+                variant="contained" 
+                color="primary"
+                style={{marginTop: '2%'}}> Sign Up
+              </Button>  
+            </FormControl>
+          </FormGroup>
         </form>
+      </Container>
       </>
     )
   }
