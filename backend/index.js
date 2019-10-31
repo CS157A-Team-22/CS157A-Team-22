@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 connection.connect();
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded( {extended: false} ));
 
 const QRY = 'SELECT * FROM '//user;'
 
@@ -43,8 +43,13 @@ app.get('/full-test/:table', (req, res) => {
 
 app.post('/submit-new-user', (req, res) => {
   console.log(req.body);
-  let newUser = req.body
-  newUser.libraryCardNumber = 30;
+  const newUser = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
+    libraryCardNumber: Math.floor(Math.random() * 10000)  /// ONLY TEMPORARY
+  }
   console.log(newUser)
   connection.query('INSERT INTO user SET ?', newUser);
   res.status(204).send()
