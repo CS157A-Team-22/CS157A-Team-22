@@ -32,27 +32,20 @@ export default function Item(props) {
     <Card className={classes.card}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
-          {props.item.name}
+          {props.item.type}
         </Typography>
         <Typography variant="h5" component="h2">
-          be
-          {bull}
-          nev
-          {bull}o{bull}
-          lent
+          {props.item.name}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          adjective
+          Genre: {props.item.genre}
         </Typography>
         <Typography variant="body2" component="p">
-          well meaning and kindly.
+          Call Number: 
           <br />
-          {'"a benevolent smile"'}
+          {props.item.callNumber}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
     </Card>
   );
 }
