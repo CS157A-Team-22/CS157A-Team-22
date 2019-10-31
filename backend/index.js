@@ -11,10 +11,12 @@ var connection = mysql.createConnection({
   database: 'cs157a'
 })
 
-connection.connect()
-app.use(cors())
+connection.connect();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded( {extended: false} ));
 
-const QRY = 'SELECT * FROM emp;'
+const QRY = 'SELECT * FROM '//user;'
 
 
 
@@ -30,11 +32,27 @@ app.get('/mysql-test', (req, res) => {
     })
   })
 
-app.get('/full-test', (req, res) => {
-  connection.query(QRY, (err, rows, fields) => {
+app.get('/full-test/:table', (req, res) => {
+  connection.query(QRY + req.params.table, (err, rows, fields) => {
     if(err) {console.log(err)}
     res.send(rows)
   })
+})
+
+
+
+app.post('/submit-new-user', (req, res) => {
+  console.log(req.body);
+  const newUser = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
+    libraryCardNumber: Math.floor(Math.random() * 10000)  /// ONLY TEMPORARY
+  }
+  console.log(newUser)
+  connection.query('INSERT INTO user SET ?', newUser);
+  res.status(204).send()
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
