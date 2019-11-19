@@ -30,9 +30,9 @@ app.get('/api/items', (req, res) => {
   connection.query(SELECT_ALL_QRY + 'item', (err, row, fields) => {
     // if there are items in the row array 
     if (Object.keys(row).length != 0) {
-      res.status(200).json(row);
+      return res.status(200).json(row);
     }
-    res.status(502).json({error: 'No items in inventory'});
+    return res.status(502).json({error: 'No items in inventory'});
   });
 });
 
@@ -94,10 +94,10 @@ app.post('/api/submit-new-user', (req, res) => {
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${newUser.email}"`, (err, row, fields) => {
     if (row[0]) {
       console.log("user already exists", row);
-      res.status(400).send({error: 'user already exists'});
+      return res.status(400).send({error: 'user already exists'});
     } else {
       connection.query('INSERT INTO user SET ?', newUser);
-      res.status(200).send({status: newUser.email + ' registered'});
+      return res.status(200).send({status: newUser.email + ' registered'});
     }
   });
 })
@@ -108,12 +108,12 @@ app.post('/api/login', (req, res) => {
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
     if (row[0]) {
       if (row[0].password === req.body.password) {
-        res.status(200).json("valid user");
+        return res.status(200).json("valid user");
       } else {
-        res.status(400).json({error: 'Invalid User Credentials'});
+        return res.status(400).json({error: 'Invalid User Credentials'});
       }
     } else {
-      res.status(400).json({error: 'Invalid User Credentials'});
+      return res.status(400).json({error: 'Invalid User Credentials'});
     }
   });
 })
