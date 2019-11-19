@@ -92,7 +92,7 @@ app.post('/submit-new-user', (req, res) => {
 })
 
 // log in
-// TODO hash passwords, create cookies/sessions
+// TODO use firebase to authenticate now!
 app.post('/login', (req, res) => {
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
     if (row[0]) {
