@@ -1,6 +1,17 @@
 import React from 'react'
 import Item from './Item'
+
+import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+
 import axiosClient from '../config/axiosClient';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  }
+}));
 
 class ItemViewer extends React.Component {
   constructor(props) {
@@ -26,22 +37,22 @@ class ItemViewer extends React.Component {
     })
   }
 
-  generateCards() {
-    console.log("items", this.state.items);
-    return( 
-      this.state.items.map((anItem, index) => {
-      // console.log(anItem)
-      return (<Item key={index} item={anItem} />)
-      })
-    )
-  }
-
   render() {
+    const { classes } = this.props;
     return(
       <div>
-        {this.generateCards()}
+        <Grid container className={classes.root} spacing={3} style={{padding: '30px'}}>
+          { this.state.items.map((anItem, index) => {
+            // console.log(anItem)
+            return (
+              <Grid item xs={3} key={index}>
+                <Item key={index} item={anItem} />
+              </Grid>
+            )
+          }) }
+        </Grid>
       </div>
   )}
 }
 
-export default ItemViewer
+export default withStyles(useStyles)(ItemViewer)
