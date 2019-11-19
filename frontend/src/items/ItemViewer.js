@@ -1,6 +1,6 @@
 import React from 'react'
-import Item from './items/Item'
-import axiosClient from './config/axiosClient';
+import Item from './Item'
+import axiosClient from '../config/axiosClient';
 
 class ItemViewer extends React.Component {
   constructor(props) {
