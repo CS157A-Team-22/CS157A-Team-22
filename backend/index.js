@@ -82,8 +82,8 @@ app.post('/add-item', (req, res) => {
 })
 
 // add a new user
-app.post('/submit-new-user', (req, res) => {
-  // console.log(req.body);
+app.post('/api/submit-new-user', (req, res) => {
+  console.log(req.body);
   const newUser = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -104,10 +104,9 @@ app.post('/submit-new-user', (req, res) => {
 
 // log in
 // TODO hash passwords, create cookies/sessions
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
     if (row[0]) {
-      console.log(row[0]);
       if (row[0].password === req.body.password) {
         res.status(200).json("valid user");
       } else {
