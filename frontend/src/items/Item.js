@@ -31,9 +31,6 @@ export default function Item(props) {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-          {props.item.type}
-        </Typography>
         <Typography variant="h5" component="h2">
           {props.item.name}
         </Typography>
@@ -41,9 +38,8 @@ export default function Item(props) {
           Genre: {props.item.genre}
         </Typography>
         <Typography variant="body2" component="p">
-          Call Number: 
           <br />
-          {props.item.callNumber}
+          {props.item.status}
         </Typography>
       </CardContent>
     </Card>

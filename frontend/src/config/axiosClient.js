@@ -12,5 +12,11 @@ export default {
         signup(body) {
             return axiosClient.post('/submit-new-user', body);
         }
+    },
+    fetch: {
+        getItems() {
+            debugger;
+            return axiosClient.get('/items');
+        }
     }
 }
