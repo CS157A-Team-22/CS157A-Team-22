@@ -25,6 +25,17 @@ const ITEM_DB = 'item(callNumber, purchasePrice, donated, type, status, genre, n
 // default
 app.get('/', (req, res) => res.send('Hello World!'))
 
+// get all items in inventory
+app.get('/api/items', (req, res) => {
+  connection.query(SELECT_ALL_QRY + 'item', (err, row, fields) => {
+    // if there are items in the row array 
+    if (Object.keys(row).length != 0) {
+      res.status(200).json(row);
+    }
+    res.status(502).json({error: 'No items in inventory'});
+  });
+});
+
 // react test
 app.get('/react-test', (req, res) => res.send('Hi React, I\'m express.'))
 
