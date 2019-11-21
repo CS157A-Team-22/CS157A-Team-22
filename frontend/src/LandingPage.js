@@ -1,5 +1,6 @@
 import React from 'react'
 import ItemViewer from './items/ItemViewer'
+import SearchBar from './items/SearchBar'
 
 
 class LandingPage extends React.Component {
@@ -22,7 +23,7 @@ class LandingPage extends React.Component {
         <button onClick={this.getTableData.bind(this, 'hold', false)}>Get Holds!</button>
         <button onClick={this.getTableData.bind(this, 'wishlist', false)}>Get Wishlist!</button>
         <button onClick={this.getTableData.bind(this, 'addtoinventory', false)}>Get addToInventory!</button><br/><br/> */}
-        
+        <SearchBar/>
         <ItemViewer/>
       </>
     );
