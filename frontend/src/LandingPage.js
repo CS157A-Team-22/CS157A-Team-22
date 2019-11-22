@@ -2,29 +2,39 @@ import React from 'react'
 import ItemViewer from './items/ItemViewer'
 import SearchBar from './items/SearchBar'
 
+import axiosClient from './config/axiosClient';
 
 class LandingPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {rows: [], cards: false};
+    this.state = {
+      items: [], 
+      searchText: ''
+    };
+  }
+
+  componentDidMount() {
+    this.getItems();
+  }
+
+  // hit the API endpoint to get the items from DB 
+  getItems = () => {
+    axiosClient.fetch.getItems()
+    .then(res => {
+      console.log("items fetched successfully");
+      this.setState({ items: res.data });
+    })
+    .catch(err => {
+      console.log("error in getting items", err);
+    })
   }
 
   render() {
     return (
       <>
-        {/* <button onClick={this.getTableData.bind(this, 'user', false)}>Get Users!</button>
-        <button onClick={this.getTableData.bind(this, 'customer', false)}>Get Customers!</button>
-        <button onClick={this.getTableData.bind(this, 'librarian', false)}>Get Librarians!</button><br/>
-        <button onClick={this.getTableData.bind(this, 'item', true)}>Get Items!</button>
-        <button onClick={this.getTableData.bind(this, 'book', false)}>Get Books!</button>
-        <button onClick={this.getTableData.bind(this, 'movie', false)}>Get Movies!</button><br/>
-        <button onClick={this.getTableData.bind(this, 'borrows', false)}>Get Borrows!</button>
-        <button onClick={this.getTableData.bind(this, 'hold', false)}>Get Holds!</button>
-        <button onClick={this.getTableData.bind(this, 'wishlist', false)}>Get Wishlist!</button>
-        <button onClick={this.getTableData.bind(this, 'addtoinventory', false)}>Get addToInventory!</button><br/><br/> */}
-        <SearchBar/>
-        <ItemViewer/>
+        <SearchBar searchText={this.state.searchText}/>
+        <ItemViewer items={this.state.items}/>
       </>
     );
   }
