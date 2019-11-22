@@ -6,7 +6,8 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   card: {
-    minWidth: 275,
+    minWidth: '25%',
+    height: '95%',
     backgroundColor: 'rgb(255, 250, 227)'
   },
   bullet: {
