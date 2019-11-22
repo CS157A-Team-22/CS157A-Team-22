@@ -4,7 +4,6 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
 
-import axios from 'axios';
 import axiosClient from './config/axiosClient';
 
 class NewUserForm extends Component {

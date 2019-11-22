@@ -19,8 +19,6 @@ class App extends React.Component {
     };
   }
 
-  
-
   getData() {
     let url = "http://127.0.0.1:5000/react-test"
     let fetchMethod = { method: 'GET', mode: 'cors'}
@@ -38,7 +36,6 @@ class App extends React.Component {
     })
   }
 
-
   testFull(table) {
     let url = "http://127.0.0.1:5000/full-test/" + table
     let fetchMethod = { method: 'GET', mode: 'cors'}
@@ -49,8 +46,6 @@ class App extends React.Component {
       })
     })
   }
-
-
 
   displayRows() {
     //console.log(this.state.rows)
@@ -67,7 +62,6 @@ class App extends React.Component {
         }
       </tbody></table>)
   }
-
 
   render() {
     return (
