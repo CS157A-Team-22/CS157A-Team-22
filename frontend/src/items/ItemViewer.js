@@ -1,7 +1,6 @@
 import React from 'react'
 import Item from './Item'
 
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 

@@ -2,6 +2,10 @@ import React from 'react'
 import ItemViewer from './items/ItemViewer'
 import SearchBar from './items/SearchBar'
 
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+
 import axiosClient from './config/axiosClient';
 
 class LandingPage extends React.Component {
@@ -39,6 +43,13 @@ class LandingPage extends React.Component {
   render() {
     return (
       <>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" >
+              Library
+            </Typography>
+          </Toolbar>
+        </AppBar>
         <SearchBar 
           searchText={this.state.searchText} 
           onChange={this.handleSearchTextChange}
