@@ -30,11 +30,23 @@ class LandingPage extends React.Component {
     })
   }
 
+  handleSearchTextChange = (value) => {
+    this.setState({
+      searchText: value
+    });
+  }
+
   render() {
     return (
       <>
-        <SearchBar searchText={this.state.searchText}/>
-        <ItemViewer items={this.state.items}/>
+        <SearchBar 
+          searchText={this.state.searchText} 
+          onChange={this.handleSearchTextChange}
+        />
+        <ItemViewer 
+          items={this.state.items}
+          searchText={this.state.searchText}
+        />
       </>
     );
   }

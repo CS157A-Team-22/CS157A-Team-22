@@ -12,11 +12,14 @@ const useStyles = theme => ({
 });
 
 const ItemViewer = (props) => {
-  const { classes } = props;
+  const { classes, searchText, items } = props;
+  debugger;
+  const filteredItems = items.filter(item => item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1);
+
   return(
     <div>
       <Grid container className={classes.root} spacing={3} style={{padding: '30px'}}>
-        { props.items.map((anItem, index) => {
+        { filteredItems.map((anItem, index) => {
           return (
             <Grid item xs={3} key={index}>
               <Item key={index} item={anItem} />
