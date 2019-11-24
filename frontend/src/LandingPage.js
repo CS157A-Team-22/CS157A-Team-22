@@ -68,18 +68,17 @@ class LandingPage extends React.Component {
   handleListItemClick = (text) => {
     console.log(text);
     text = text.split(' ');
-    if (text[0].toLowerCase() === 'wish') {
-      axiosClient.fetch.getWishList({
-        params: {'card-number': '12'}
-      })
-      .then(res => {
-        console.log("wishlist fetched successfully");
-        this.props.history.push('/wishlist');
-      })
-      .catch(err => {
-        console.log("error in getting wishlist", err);
-      })
-    }
+    url = text[0].toLowerCase();
+    axiosClient.fetch.get(url, {
+      params: {'card-number': '12'}
+    })
+    .then(res => {
+      console.log(`${url} fetched successfully`);
+      this.props.history.push(`/${url}`);
+    })
+    .catch(err => {
+      console.log(`error in getting ${url}`, err);
+    })
   }
 
   render() {

@@ -18,8 +18,8 @@ export default {
             debugger;
             return axiosClient.get('/items');
         },
-        getWishList(body) {
-            return axiosClient.get('/wishlist', body);
+        get(url, body) {
+            return axiosClient.get(`/${url}`, body);
         }
     }
 }
