@@ -67,10 +67,9 @@ class LandingPage extends React.Component {
 
   handleListItemClick = (text) => {
     console.log(text);
-    text = text.split(' ');
-    url = text[0].toLowerCase();
+    let url = text.split(' ').join('-').toLowerCase();
     axiosClient.fetch.get(url, {
-      params: {'card-number': '12'}
+      params: {'card-number': '14'}
     })
     .then(res => {
       console.log(`${url} fetched successfully`);

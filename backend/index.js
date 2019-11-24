@@ -67,10 +67,49 @@ app.get('/remove-item/:callNum', (req, res) => {
 })
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
-app.get("/api/wishlist", (req, res) => {
+app.get("/api/wish-list", (req, res) => {
   console.log(req.query);
   connection.query(SELECT_ALL_QRY + 
       `wishlist WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length != 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items in wishlist'});
+    });
+})
+
+app.get("/api/holds", (req, res) => {
+  console.log(req.query);
+  connection.query(SELECT_ALL_QRY + 
+      `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length != 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items in wishlist'});
+    });
+})
+
+// app.get("/api/checked-out", (req, res) => {
+//   console.log(req.query);
+//   connection.query(SELECT_ALL_QRY + 
+//       `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+//       console.log(row);
+//       if (Object.keys(row).length != 0) {
+//         return res.status(200).json(row);
+//       }
+//       return res.status(502).json({error: 'No items in wishlist'});
+//     });
+// })
+
+app.get("/api/reading-history", (req, res) => {
+  console.log(req.query);
+  let sql_query = `SELECT Item.name, borrowDate, returnDate, numberRenewals, overdue 
+                  FROM item Item, borrows WHERE libraryCardNumber="${req.query['card-number']}" 
+                  AND returnDate < NOW()
+                  AND Item.callNumber = borrows.callNumber`;
+  connection.query(sql_query, (err, row, fields) => {
       console.log(row);
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
