@@ -1,9 +1,11 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom';
+
 import ItemViewer from './items/ItemViewer'
 import SearchBar from './items/SearchBar'
 
 import clsx from 'clsx';
-import { withStyles, useTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -118,6 +120,23 @@ class LandingPage extends React.Component {
     this.setState({open: true});
   }
 
+  handleListItemClick = (text) => {
+    console.log(text);
+    text = text.split(' ');
+    if (text[0].toLowerCase() === 'wish') {
+      axiosClient.fetch.getWishList({
+        params: {'card-number': '12'}
+      })
+      .then(res => {
+        console.log("wishlist fetched successfully");
+        this.props.history.push('/wishlist');
+      })
+      .catch(err => {
+        console.log("error in getting wishlist", err);
+      })
+    }
+  }
+
   render() {
     const { classes, theme } = this.props;
     
@@ -161,16 +180,16 @@ class LandingPage extends React.Component {
           </div>
           <Divider />
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
+            {['Checked out', 'Wish list', 'Reading history', 'Holds'].map((text, index) => (
+              <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
           </List>
           <Divider />
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
+            {['Fees', 'Logout'].map((text, index) => (
+              <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
@@ -196,4 +215,4 @@ class LandingPage extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(LandingPage);
+export default withRouter(withStyles(styles, { withTheme: true })(LandingPage));

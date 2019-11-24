@@ -17,6 +17,9 @@ export default {
         getItems() {
             debugger;
             return axiosClient.get('/items');
+        },
+        getWishList(body) {
+            return axiosClient.get('/wishlist', body);
         }
     }
 }

@@ -3,6 +3,7 @@ const app = express()
 const port = 5000
 const cors = require('cors')
 const mysql = require('mysql')
+const bodyParser = require('body-parser');
 
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -14,7 +15,8 @@ var connection = mysql.createConnection({
 connection.connect();
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded( {extended: false} ));
+// app.use(express.urlencoded( {extended: true} ));
+app.use(bodyParser.urlencoded( {extended: true} ));
 
 const SELECT_ALL_QRY = 'SELECT * FROM '
 const ITEM_DB = 'item(callNumber, purchasePrice, donated, type, status, genre, name, releaseDate, loanPeriod, lateFee'
@@ -65,10 +67,17 @@ app.get('/remove-item/:callNum', (req, res) => {
 })
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
-app.get('/wishlist', (req, res) => {
-  connection.query(SELECT_ALL_QRY + ' wishlist WHERE libraryCardNumber=')
+app.get("/api/wishlist", (req, res) => {
+  console.log(req.query);
+  connection.query(SELECT_ALL_QRY + 
+      `wishlist WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length != 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items in wishlist'});
+    });
 })
-
 
 // POST requests
 
