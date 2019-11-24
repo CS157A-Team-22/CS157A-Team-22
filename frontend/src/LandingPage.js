@@ -1,8 +1,9 @@
-import React from 'react'
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-import ItemViewer from './items/ItemViewer'
-import SearchBar from './items/SearchBar'
+import ItemViewer from './items/ItemViewer';
+import SearchBar from './items/SearchBar';
+import styles from './config/materialCss';
 
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -21,63 +22,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import axiosClient from './config/axiosClient';
 
-const drawerWidth = 240;
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  },
-  content: {
-    // flexGrow: 1,
-    // padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    // marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: drawerWidth,
-  },
-});
+const materialCss = styles;
 
 class LandingPage extends React.Component {
 
@@ -215,4 +160,4 @@ class LandingPage extends React.Component {
   }
 }
 
-export default withRouter(withStyles(styles, { withTheme: true })(LandingPage));
+export default withRouter(withStyles(materialCss, { withTheme: true })(LandingPage));
