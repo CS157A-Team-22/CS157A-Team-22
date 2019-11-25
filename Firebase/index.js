@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './frontend/index.css'; // may not be correct, check
-import * as serviceWorker from './serviceWorker'; // not sure about location for next two
-import App from './components/App';
-import Firebase, { FirebaseContext } from './Firebase';
-
+import App from '/frontend/App';
+import FirebaseContext, {withFirebase} from './context';
+import Firebase from './firebase';
 
 ReactDOM.render(
     <FirebaseContext.Provider value={new Firebase()}>
@@ -14,4 +12,5 @@ ReactDOM.render(
 );
 
 
-serviceWorker.unregister();
+export default Firebase;
+export {FirebaseContext, withFirebase};

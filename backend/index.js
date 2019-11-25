@@ -78,7 +78,7 @@ app.post('/submit-new-user', (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
-    libraryCardNumber: Math.floor(Math.random() * 10000)  /// ONLY TEMPORARY
+    libraryCardNumber: Math.floor(Math.random() * 10000)  //TODO: ONLY TEMPORARY
   }
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${newUser.email}"`, (err, row, fields) => {
     if (row[0]) {

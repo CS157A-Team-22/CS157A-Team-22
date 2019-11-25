@@ -1,5 +1,5 @@
 # ignore Mac system files
 .DS_store
 
-#ignore firebase config file
+#ignore environment config file
 .env
