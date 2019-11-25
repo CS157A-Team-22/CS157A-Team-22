@@ -68,9 +68,10 @@ app.get('/remove-item/:callNum', (req, res) => {
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
-  console.log(req.query);
-  connection.query(SELECT_ALL_QRY + 
-      `wishlist WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+  let sql_query = `SELECT Item.name
+                  FROM item Item, wishlist WHERE libraryCardNumber="${req.query['card-number']}" 
+                  AND Item.callNumber = wishlist.callNumber`;
+  connection.query(sql_query, (err, row, fields) => {
       console.log(row);
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
