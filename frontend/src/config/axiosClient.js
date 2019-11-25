@@ -19,6 +19,9 @@ export default {
         },
         getWishListItems(body) {
             return axiosClient.get('/wish-list', body);
+        },
+        getReadingHistory(body) {
+            return axiosClient.get('/reading-history', body);
         }
     }
 }
