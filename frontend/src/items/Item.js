@@ -24,7 +24,6 @@ const useStyles = makeStyles({
 });
 
 export default function Item(props) {
-  console.log(props)
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
