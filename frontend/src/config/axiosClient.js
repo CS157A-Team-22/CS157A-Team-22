@@ -15,11 +15,10 @@ export default {
     },
     fetch: {
         getItems() {
-            debugger;
             return axiosClient.get('/items');
         },
-        get(url, body) {
-            return axiosClient.get(`/${url}`, body);
+        getWishListItems(body) {
+            return axiosClient.get('/wish-list', body);
         }
     }
 }
