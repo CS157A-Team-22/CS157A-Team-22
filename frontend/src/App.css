@@ -3,4 +3,5 @@ html, body {
     min-height: 100%;
     height: 100vh;
     background-color: #fcf2c0;
+    overflow-x: hidden;
 }

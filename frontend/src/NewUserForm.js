@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
 
-import axios from 'axios';
+import axiosClient from './config/axiosClient';
 
 class NewUserForm extends Component {
 
@@ -23,11 +23,10 @@ class NewUserForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    let url = "http://localhost:5000/submit-new-user"
   
     // TODO validate password 
     let { firstName, lastName, email, password, passwordConfirmation } = this.state;
-    axios.post(url, {
+    axiosClient.auth.signup({
       firstName, 
       lastName,
       email, 
