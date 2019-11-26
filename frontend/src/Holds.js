@@ -40,6 +40,13 @@ class Holds extends React.Component {
     return (
       <div>
         <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '50px'}}>Sarah's Holds!</h1>
+        {this.state.items.length === 0 ? <p style={{textAlign: 'center'}}>No items placed on hold</p> : this.renderTable()}
+      </div>
+    );
+  }
+  
+  renderTable = () => {
+      return (
         <Paper style={{backgroundColor: 'rgb(255, 250, 227)', width: '75%', margin: '10px auto'}}>
             <Table aria-label="simple table">
                 <TableHead>
@@ -60,8 +67,7 @@ class Holds extends React.Component {
                 </TableBody>
             </Table>
         </Paper>
-      </div>
-    );
+      );
   }
 }
 
