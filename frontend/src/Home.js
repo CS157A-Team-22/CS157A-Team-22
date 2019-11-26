@@ -37,7 +37,7 @@ class Home extends Component {
     }
     
     renderGrid = () => {
-        const { classes, spacing } = this.props;
+        const { classes } = this.props;
         let imgSrc = "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1753&q=80";
         return (
           <Grid container className={classes.root} spacing={0} style={{maxHeight: '100vh'}}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -23,13 +24,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Item(props) {
-  console.log(props)
+const Item = (props) => {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} onClick={() => handleItemClick(props.item, props)}>
       <CardContent>
         <Typography variant="h5" component="h2">
           {props.item.name}
@@ -45,3 +45,12 @@ export default function Item(props) {
     </Card>
   );
 }
+
+let handleItemClick = (item, props) => {
+  props.history.push({
+    pathname: '/item',
+    state: { item }
+  })
+}
+
+export default withRouter(Item);
