@@ -3,6 +3,7 @@ import Home from './Home';
 import LandingPage from './LandingPage';
 import WishList from './wishlist/WishList';
 import CheckOut from './CheckOut'
+import CheckIn from './CheckIn'
 
 import {
   BrowserRouter as Router,
@@ -96,6 +97,9 @@ class App extends React.Component {
             </Route>
             <Route path="/check-out">
               <CheckOut/>
+            </Route>
+            <Route path="/check-in">
+              <CheckIn/>
             </Route>
           </Switch>
       </Router>

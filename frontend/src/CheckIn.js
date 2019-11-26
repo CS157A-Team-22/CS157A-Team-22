@@ -27,26 +27,22 @@ const materialCss = styles;
 
 
 
-class CheckOut extends Component {
+class CheckIn extends Component {
 
   constructor(props) {
     super(props);
     
     this.state = {
       CallNumber: '', 
-      LibraryCardNumber: ''      
     }
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    let { CallNumber, LibraryCardNumber } = this.state;
-    //axiosClient.auth.CheckOut({
-    //   CallNumber,
-    //   LibraryCardNumber
-    // }).then( res => {
-    //  console.log("login response", res);
-      alert("Checked out " + CallNumber + "to " + LibraryCardNumber);
+    let { CallNumber } = this.state;
+    let date = new Date();
+    let today = date.getMonth() + " " + date.getDay() + " " + date.getYear();
+      alert("Checked in " + CallNumber + " on " + today);
       this.props.history.push('/items');
     // }).catch(err => {
     //   console.log("login error", err);
@@ -119,7 +115,7 @@ class CheckOut extends Component {
           </div>
           <Divider />
           <List>
-            {['Checked out', 'Wish list', 'Check Out', 'Reading history', 'Holds'].map((text, index) => (
+            {['Checked out', 'Wish list', 'Check Out', 'Check In', 'Reading history', 'Holds'].map((text, index) => (
               <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                 <ListItemText primary={text} />
               </ListItem>
@@ -143,21 +139,10 @@ class CheckOut extends Component {
               backgroundColor: '#fffae3',
               minHeight: '50vh'
           }}>
-          <h1 style={{textAlign: 'center', marginTop: '10px'}}> Check Out an Item </h1>
-          <p style={{textAlign: 'center', marginTop: '10px'}}> Please enter the customer's Library Card Number and the Call Number of the item to be checked out. </p>
+          <h1 style={{textAlign: 'center', marginTop: '10px'}}> Check In an Item </h1>
+          <p style={{textAlign: 'center', marginTop: '10px'}}> Please enter the Call Number of the item to be checked in. </p>
           <form onSubmit={this.handleSubmit} method="post">
             <FormGroup>
-              <FormControl>
-                <InputLabel htmlFor="LibraryCardNumber">Library Card Number</InputLabel>
-                <Input 
-                  type="LibraryCardNumber" 
-                  id="LibraryCardNumber" 
-                  name="LibraryCardNumber" 
-                  value={this.state.LibraryCardNumber}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
               <FormControl>
                 <InputLabel htmlFor="CallNumber">Call Number</InputLabel>
                 <Input
@@ -174,7 +159,7 @@ class CheckOut extends Component {
                   type="submit" 
                   variant="contained" 
                   color="primary"
-                  style={{margin: '4% 0'}}> Check Out Item
+                  style={{margin: '4% 0'}}> Check In Item
                 </Button>  
               </FormControl>
             </FormGroup>
@@ -186,4 +171,4 @@ class CheckOut extends Component {
 
 }
 
-export default withRouter(withStyles(materialCss, { withTheme: true })(CheckOut));
+export default withRouter(withStyles(materialCss, { withTheme: true })(CheckIn));

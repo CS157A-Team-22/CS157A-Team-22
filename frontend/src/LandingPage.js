@@ -114,7 +114,7 @@ class LandingPage extends React.Component {
           </div>
           <Divider />
           <List>
-            {['Checked out', 'Wish list', 'Check Out', 'Reading history', 'Holds'].map((text, index) => (
+            {['Checked out', 'Wish list', 'Check Out', 'Check In', 'Reading history', 'Holds'].map((text, index) => (
               <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                 <ListItemText primary={text} />
               </ListItem>
