@@ -70,60 +70,60 @@ class WishList extends Component {
         const { classes, theme } = this.props;
 
         return ( 
-            <>
+            <div>
                 <AppBar 
-                    position="static"
-                    className={clsx(classes.appBar, {
-                        [classes.appBarShift]: this.state.open,
-                    })}
-                    >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.handleDrawerOpen}
-                            edge="start"
-                            className={clsx(classes.menuButton, this.state.open && classes.hide)}
-                        >
-                        <MenuIcon />
-                        </IconButton>
-                        <Typography variant="h6" >
-                            Library
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
+          position="static"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: this.state.open,
+          })}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, this.state.open && classes.hide)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" >
+              Library
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-                <Drawer
-                    className={classes.drawer}
-                    variant="persistent"
-                    anchor="left"
-                    open={this.state.open}
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                    >
-                    <div className={classes.drawerHeader}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                        </IconButton>
-                    </div>
-                    <Divider />
-                    <List>
-                        {['Checked out', 'Wish list', 'Reading history', 'Holds'].map((text, index) => (
-                        <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        {['Fees', 'Logout'].map((text, index) => (
-                        <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={this.state.open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={this.handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            {['Checked out', 'Wish list', 'Check Out', 'Reading history', 'Holds'].map((text, index) => (
+              <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {['Fees', 'Logout'].map((text, index) => (
+              <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
 
                 <main 
                     className={clsx(classes.content, {
@@ -133,7 +133,7 @@ class WishList extends Component {
                     <h1 style={{textAlign: 'center', marginTop: '50px'}}>{ this.state.name }'s Wishlist!</h1>
                     <WishListTable items={this.state.items} style={{margin: '10px auto'}}/>
                 </main>
-            </>
+            </div>
         );
     }
 }

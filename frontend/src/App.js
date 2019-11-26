@@ -2,6 +2,7 @@ import React from 'react';
 import Home from './Home';
 import LandingPage from './LandingPage';
 import WishList from './wishlist/WishList';
+import CheckOut from './CheckOut'
 
 import {
   BrowserRouter as Router,
@@ -92,6 +93,9 @@ class App extends React.Component {
             </Route>
             <Route path="/wish-list">
               <WishList/>
+            </Route>
+            <Route path="/check-out">
+              <CheckOut/>
             </Route>
           </Switch>
       </Router>
