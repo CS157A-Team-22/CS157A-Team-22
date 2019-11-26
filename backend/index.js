@@ -82,13 +82,16 @@ app.get("/api/wish-list", (req, res) => {
 
 app.get("/api/holds", (req, res) => {
   console.log(req.query);
-  connection.query(SELECT_ALL_QRY + 
-      `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+  let sql_query = `SELECT Item.name, holdDate
+                  FROM item Item, hold WHERE hold.libraryCardNumber="${req.query['card-number']}"
+                  AND Item.callNumber = hold.callNumber
+                  AND hold.holdDate > NOW()`;
+  connection.query(sql_query, (err, row, fields) => {
       console.log(row);
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
       }
-      return res.status(502).json({error: 'No items in wishlist'});
+      return res.status(502).json({error: 'No items in holds'});
     });
 })
 
@@ -115,7 +118,7 @@ app.get("/api/reading-history", (req, res) => {
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
       }
-      return res.status(502).json({error: 'No items in wishlist'});
+      return res.status(400).json({error: 'No items in reading history'});
     });
 })
 

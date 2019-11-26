@@ -17,6 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import HomeIcon from '@material-ui/icons/Home';
 
 const materialCss = styles;
 
@@ -43,6 +44,10 @@ class Navigation extends Component {
         this.props.history.push(`/${url}`);
     }
 
+    handleClickHome = () => {
+        this.props.history.push('/items');
+    }
+
     render() { 
         const { classes, theme } = this.props;
         return ( 
@@ -55,17 +60,26 @@ class Navigation extends Component {
                 >
                     <Toolbar>
                         <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={this.handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, this.state.open && classes.hide)}
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={this.handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, this.state.open && classes.hide)}
                         >
                         <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" >
                         Library
                         </Typography>
+                        <IconButton
+                            color="inherit"
+                            onClick={this.handleClickHome}
+                            style={{float: 'right', alignItem: 'right', marginLeft:'85%'}}
+                        >
+                        <HomeIcon/>
+                        </IconButton>
+                            
+                        
                     </Toolbar>
                 </AppBar>
 

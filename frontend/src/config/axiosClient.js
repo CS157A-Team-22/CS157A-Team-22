@@ -22,6 +22,9 @@ export default {
         },
         getReadingHistory(body) {
             return axiosClient.get('/reading-history', body);
+        },
+        getHolds(body) {
+            return axiosClient.get('/holds', body);
         }
     }
 }
