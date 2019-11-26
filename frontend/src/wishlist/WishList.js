@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import axiosClient from '../config/axiosClient';
 import WishListTable from './WishListTable';
@@ -32,14 +33,23 @@ class WishList extends Component {
         })
     }
 
+    handleClickListItem = (item) => {
+        this.props.history.push({
+            pathname: '/item',
+            state: { item }
+        })
+    }
+
     render() { 
         return ( 
             <>
                 <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.state.name }'s Wishlist!</h1>
-                {this.state.items.length === 0 ? <p style={{textAlign: 'center'}}>No items in wishlist</p> : <WishListTable items={this.state.items} style={{margin: '0 auto'}}/>}
+                {this.state.items.length === 0 ? 
+                    <p style={{textAlign: 'center'}}>No items in wishlist</p> : 
+                    <WishListTable items={this.state.items} style={{margin: '0 auto'}} onClick={this.handleClickListItem}/>}
             </>
         );
     }
 }
  
-export default WishList;
+export default withRouter(WishList);
