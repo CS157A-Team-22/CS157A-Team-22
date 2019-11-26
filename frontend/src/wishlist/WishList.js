@@ -35,8 +35,8 @@ class WishList extends Component {
     render() { 
         return ( 
             <>
-                <h1 style={{textAlign: 'center', marginTop: '50px'}}>{ this.state.name }'s Wishlist!</h1>
-                <WishListTable items={this.state.items} style={{margin: '10px auto'}}/>
+                <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.state.name }'s Wishlist!</h1>
+                {this.state.items.length === 0 ? <p style={{textAlign: 'center'}}>No items in wishlist</p> : <WishListTable items={this.state.items} style={{margin: '0 auto'}}/>}
             </>
         );
     }
