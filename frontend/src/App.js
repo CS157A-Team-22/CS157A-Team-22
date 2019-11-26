@@ -6,6 +6,8 @@ import ReadingHistory from './readingHistory/ReadingHistory';
 import Navigation from './Navigation';
 import Holds from './Holds';
 import ItemPage from './items/ItemPage';
+import CheckIn from './CheckIn'
+import CheckOut from './CheckOut'
 
 
 import {
@@ -91,6 +93,12 @@ class App extends React.Component {
               </Route>
               <Route path="/item">
                 <Navigation><ItemPage/></Navigation>
+              </Route>
+               <Route path="/check-in">
+                <Navigation><CheckIn/></Navigation>
+              </Route>
+               <Route path="/check-out">
+                <Navigation><CheckOut/></Navigation>
               </Route>
             </Switch>
         </Router>
