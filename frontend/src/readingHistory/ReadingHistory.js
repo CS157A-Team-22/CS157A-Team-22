@@ -60,7 +60,7 @@ class ReadingHistory extends React.Component {
                     <TableCell align="left">{item.borrowDate.substring(0,10)}</TableCell>
                     <TableCell align="left">{item.returnDate.substring(0,10)}</TableCell>
                     <TableCell align="left">{item.numberRenewals}</TableCell>
-                    <TableCell align="left">{item.overdue}</TableCell>
+                    <TableCell align="left">{item.overdue === 0 ? 'No' : 'Yes'}</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
