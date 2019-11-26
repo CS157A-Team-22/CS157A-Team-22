@@ -30,6 +30,9 @@ export default {
     update: {
         addToWishList(body) {
             return axiosClient.post('/wish-list', body);
+        },
+        addToHold(body) {
+            return axiosClient.post('/holds', body);
         }
     }
 }

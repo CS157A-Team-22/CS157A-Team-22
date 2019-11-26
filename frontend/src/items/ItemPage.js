@@ -39,6 +39,26 @@ class ItemPage extends Component {
         })
     }
 
+    handlePlaceHold = () => {
+        let { item } = this.props.location.state;
+
+        axiosClient.update.addToHold({
+            'call-number': item.callNumber,
+            'card-number': '14'
+        })
+        .then(res => {
+            console.log("added to hold successfully");
+            alert("Placed item on hold successfully!");
+            this.setState({
+                hold: true
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            alert(err.response.data.error);
+        })
+    }
+
     render() {
         let { item } = this.props.location.state;
         return ( 
