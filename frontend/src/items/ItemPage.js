@@ -6,19 +6,41 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import axiosClient from '../config/axiosClient';
 
 class ItemPage extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            details: {}
+            details: {}, 
+            wishList: false,
+            hold: false
         };
+    }
+
+    handleAddToWishList = () =>{
+        let { item } = this.props.location.state;
+
+        axiosClient.update.addToWishList({
+            'call-number': item.callNumber,
+            'card-number': '14'
+        })
+        .then(res => {
+            console.log("added to wishlist successfully");
+            alert("Added to wishlist successfully!");
+            this.setState({
+                wishList: true
+            });
+        })
+        .catch(err => {
+            console.log(err.response);
+            alert(err.response.data.error);
+        })
     }
 
     render() {
         let { item } = this.props.location.state;
-
         return ( 
             <>
             <Card style={{
@@ -52,6 +74,7 @@ class ItemPage extends Component {
                             variant="contained" 
                             color="secondary"
                             onClick={this.handlePlaceHold}
+                            disabled={this.state.hold}
                         >
                             Place Hold!
                         </Button>
@@ -61,6 +84,7 @@ class ItemPage extends Component {
                         variant="contained" 
                         color="primary"
                         onClick={this.handleAddToWishList}
+                        disabled={this.state.wishList}
                     >
                         Add to Wishlist!
                     </Button>

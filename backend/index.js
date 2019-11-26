@@ -124,6 +124,33 @@ app.get("/api/reading-history", (req, res) => {
 
 // POST requests
 
+// TODO: confirm PK of wishlist, currently not listed in MySQL
+app.post("/api/wish-list", (req, res) => {
+  let validation_query = `SELECT * FROM wishlist 
+                          WHERE callNumber="${req.body['call-number']}" 
+                          AND libraryCardNumber="${req.body['card-number']}"`;
+
+  connection.query(validation_query, (err, row, fields) => {
+    console.log(row);
+    if (Object.keys(row).length === 0) {
+      return insertToWishList(req, res);
+    }
+    return res.status(502).json({error: 'Item already in wishlist'});
+  });
+
+})
+
+insertToWishList = (req, res) => {
+  let sql_query = `INSERT INTO wishlist VALUES(${req.body['call-number']}, ${req.body['card-number']})`;
+  connection.query(sql_query, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length != 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items posted to wishlist'});
+    });
+}
+
 // add an item to the system
 //TODO: need to finish + test
 app.post('/add-item', (req, res) => {

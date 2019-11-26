@@ -26,5 +26,10 @@ export default {
         getHolds(body) {
             return axiosClient.get('/holds', body);
         }
+    },
+    update: {
+        addToWishList(body) {
+            return axiosClient.post('/wish-list', body);
+        }
     }
 }
