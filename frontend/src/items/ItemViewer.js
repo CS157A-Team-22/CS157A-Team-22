@@ -20,8 +20,8 @@ const ItemViewer = (props) => {
       <Grid container className={classes.root} spacing={3} style={{padding: '30px'}}>
         { filteredItems.map((anItem, index) => {
           return (
-            <Grid item xs={3} key={index}>
-              <Item key={index} item={anItem} />
+            <Grid item xs={3} key={index} >
+              <Item key={index} item={anItem}/>
             </Grid>
           )
         }) }
@@ -30,4 +30,4 @@ const ItemViewer = (props) => {
   );
 }
 
-export default withStyles(useStyles)(ItemViewer)
+export default withStyles(useStyles)(ItemViewer);

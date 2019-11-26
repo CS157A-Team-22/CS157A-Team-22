@@ -13,7 +13,7 @@ const WishListTable = (props) => {
                     style={{backgroundColor: 'rgb(255, 250, 227)'}}>
                     {props.items.map((item,index) => (
                         <>
-                            <ListItem key={`item-${item.name}-${index}`}>
+                            <ListItem key={`item-${item.name}-${index}`} onClick={() => props.onClick(item)}>
                                 <ListItemText key={`text-${index}`} primary={`${item.name}`} />
                             </ListItem>
                             <Divider key={`divider-${index}`}/>

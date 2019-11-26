@@ -19,6 +19,20 @@ export default {
         },
         getWishListItems(body) {
             return axiosClient.get('/wish-list', body);
+        },
+        getReadingHistory(body) {
+            return axiosClient.get('/reading-history', body);
+        },
+        getHolds(body) {
+            return axiosClient.get('/holds', body);
+        }
+    },
+    update: {
+        addToWishList(body) {
+            return axiosClient.post('/wish-list', body);
+        },
+        addToHold(body) {
+            return axiosClient.post('/holds', body);
         }
     }
 }
