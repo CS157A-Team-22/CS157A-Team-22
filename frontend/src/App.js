@@ -4,6 +4,8 @@ import LandingPage from './LandingPage';
 import WishList from './wishlist/WishList';
 import ReadingHistory from './readingHistory/ReadingHistory';
 import Navigation from './Navigation';
+import Holds from './Holds';
+import ItemPage from './items/ItemPage';
 
 import {
   BrowserRouter as Router,
@@ -82,6 +84,12 @@ class App extends React.Component {
               </Route>
               <Route path="/reading-history">
                 <Navigation><ReadingHistory/></Navigation>
+              </Route>
+              <Route path="/holds">
+                <Navigation><Holds/></Navigation>
+              </Route>
+              <Route path="/item">
+                <Navigation><ItemPage/></Navigation>
               </Route>
             </Switch>
         </Router>
