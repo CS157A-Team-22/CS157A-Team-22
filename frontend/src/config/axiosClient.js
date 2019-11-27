@@ -25,6 +25,9 @@ export default {
         },
         getHolds(body) {
             return axiosClient.get('/holds', body);
+        },
+        getCheckedOut(body) {
+            return axiosClient.get('/checked-out', body);
         }
     },
     update: {
