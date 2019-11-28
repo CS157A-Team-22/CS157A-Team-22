@@ -1,6 +1,7 @@
 import React from 'react';
 import Home from './Home';
 import LandingPage from './LandingPage';
+import WishList from './wishlist/WishList';
 
 import {
   BrowserRouter as Router,
@@ -19,8 +20,6 @@ class App extends React.Component {
     };
   }
 
-  
-
   getData() {
     let url = "http://127.0.0.1:5000/react-test"
     let fetchMethod = { method: 'GET', mode: 'cors'}
@@ -38,7 +37,6 @@ class App extends React.Component {
     })
   }
 
-
   testFull(table) {
     let url = "http://127.0.0.1:5000/full-test/" + table
     let fetchMethod = { method: 'GET', mode: 'cors'}
@@ -49,8 +47,6 @@ class App extends React.Component {
       })
     })
   }
-
-
 
   displayRows() {
     //console.log(this.state.rows)
@@ -67,7 +63,6 @@ class App extends React.Component {
         }
       </tbody></table>)
   }
-
 
   render() {
     return (
@@ -94,6 +89,9 @@ class App extends React.Component {
             </Route>
             <Route path="/items">
               <LandingPage />
+            </Route>
+            <Route path="/wish-list">
+              <WishList/>
             </Route>
           </Switch>
       </Router>
