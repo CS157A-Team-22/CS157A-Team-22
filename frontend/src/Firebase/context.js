@@ -3,7 +3,6 @@ import React from 'react';
 // For grabbing the context when needed
 const FirebaseContext = React.createContext(null);
 
-
 export const withFirebase = Component => props => (
     <FirebaseContext.Consumer>
         {firebase => <Component {...props} firebase={firebase} />}
@@ -11,5 +10,3 @@ export const withFirebase = Component => props => (
 );
 
 export default FirebaseContext;
-
-export {FirebaseContext};
