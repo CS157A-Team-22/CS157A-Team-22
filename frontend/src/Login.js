@@ -3,34 +3,48 @@ import { FormControl, Input, InputLabel, FormGroup} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
+import { withFirebase } from './Firebase/context';
 
 import axiosClient from './config/axiosClient';
 
-class NewUserForm extends Component {
+const INITIAL_STATE = {
+  email: '', 
+  password: '',
+  error: null
+};
+
+class Login extends Component {
 
   constructor(props) {
     super(props);
     
-    this.state = {
-      email: '', 
-      password: ''      
-    }
+    this.state = { ...INITIAL_STATE }
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    // TODO validate password 
     let { email, password } = this.state;
-    axiosClient.auth.login({
-      email,
-      password
-    }).then( res => {
-      console.log("login response", res);
-      alert("user signed in");
-      this.props.history.push('/items');
-    }).catch(err => {
-      console.log("login error", err);
-    })
+
+    this.props.firebase
+      .doSignInWithEmailAndPassword(email, password)
+      .then(() => {
+        // reset input fields
+        this.setState({ ...INITIAL_STATE });
+        // 
+        axiosClient.auth.login({
+          email
+        }).then( res => {
+          console.log("login response", res);
+          alert("user signed in");
+          this.props.history.push('/items');
+        }).catch(err => {
+          console.log("login error", err);
+        })
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
+
     console.log("form submitted!");
   }
 
@@ -41,6 +55,9 @@ class NewUserForm extends Component {
   }
 
   render() {
+    const { email, password, error } = this.state;
+    const isInvalid = password === '' || email === '';
+
     return (
       <Container maxWidth="sm" style=
         {{ 
@@ -60,7 +77,7 @@ class NewUserForm extends Component {
                 type="email" 
                 id="email" 
                 name="email" 
-                value={this.state.email}
+                value={email}
                 onChange={this.handleChange}
                 required
               />
@@ -71,7 +88,7 @@ class NewUserForm extends Component {
                 type="password" 
                 id="password" 
                 name="password" 
-                value={this.state.password}
+                value={password}
                 onChange={this.handleChange}
                 required
               />
@@ -81,8 +98,11 @@ class NewUserForm extends Component {
                 type="submit" 
                 variant="contained" 
                 color="primary"
+                disabled={isInvalid}
                 style={{margin: '4% 0'}}> Log In
               </Button>  
+
+              {error && <p>{error.message}</p>}
             </FormControl>
           </FormGroup>
         </form>
@@ -92,4 +112,4 @@ class NewUserForm extends Component {
 
 }
 
-export default withRouter(NewUserForm);
+export default withRouter(withFirebase(Login));

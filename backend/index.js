@@ -223,14 +223,12 @@ app.post('/api/submit-new-user', (req, res) => {
 
 // log in
 // TODO use firebase to authenticate now!
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
+  console.log("inside login route")
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
     if (row[0]) {
-      if (row[0].password === req.body.password) {
-        return res.status(200).json("valid user");
-      } else {
-        return res.status(400).json({error: 'Invalid User Credentials'});
-      }
+      console.log(row[0])
+      return res.status(200).json("valid user");
     } else {
       return res.status(400).json({error: 'Invalid User Credentials'});
     }
