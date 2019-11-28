@@ -9,7 +9,8 @@ var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'root',
-  database: 'cs157a'
+  database: 'cs157a',
+  dateStrings: true
 })
 
 connection.connect();
@@ -68,7 +69,7 @@ app.get('/remove-item/:callNum', (req, res) => {
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
-  let sql_query = `SELECT Item.name
+  let sql_query = `SELECT *
                   FROM item Item, wishlist WHERE libraryCardNumber="${req.query['card-number']}" 
                   AND Item.callNumber = wishlist.callNumber`;
   connection.query(sql_query, (err, row, fields) => {
@@ -82,13 +83,16 @@ app.get("/api/wish-list", (req, res) => {
 
 app.get("/api/holds", (req, res) => {
   console.log(req.query);
-  connection.query(SELECT_ALL_QRY + 
-      `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
+  let sql_query = `SELECT Item.name, holdDate
+                  FROM item Item, hold WHERE hold.libraryCardNumber="${req.query['card-number']}"
+                  AND Item.callNumber = hold.callNumber
+                  AND hold.holdDate > NOW()`;
+  connection.query(sql_query, (err, row, fields) => {
       console.log(row);
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
       }
-      return res.status(502).json({error: 'No items in wishlist'});
+      return res.status(502).json({error: 'No items in holds'});
     });
 })
 
@@ -115,11 +119,78 @@ app.get("/api/reading-history", (req, res) => {
       if (Object.keys(row).length != 0) {
         return res.status(200).json(row);
       }
-      return res.status(502).json({error: 'No items in wishlist'});
+      return res.status(400).json({error: 'No items in reading history'});
     });
 })
 
 // POST requests
+app.post("/api/holds", (req, res) => {
+  console.log("begin route");
+  let validation_query = `SELECT * FROM hold 
+                          WHERE callNumber="${req.body['call-number']}" 
+                          AND libraryCardNumber="${req.body['card-number']}"`;
+
+  connection.query(validation_query, (err, row, fields) => {
+    console.log("row",row);
+    if (row === undefined || Object.keys(row).length === 0) {
+      return insertToHolds(req, res);
+    }
+    return res.status(502).json({error: 'Item already in holds!'});
+  });
+})
+
+insertToHolds = (req, res) => {
+  debugger;
+  console.log("begin inserting");
+  let dueDate_query = `SELECT dueDate FROM borrows WHERE callNumber="${req.body['call-number']}"`;
+  let dueDate;
+  // get due date from borrows table
+  connection.query(dueDate_query, (err, row, fields) => {
+    console.log(row[0].dueDate);
+    dueDate = row[0].dueDate;
+
+    let sql_query = `INSERT INTO hold (holdDate, callNumber, libraryCardNumber) 
+                    VALUES("${dueDate}", ${req.body['call-number']}, ${req.body['card-number']})`;
+  
+    // add to hold table with fetched dueDate attribute
+    connection.query(sql_query, (err, row, fields) => {    
+      if (Object.keys(row).length != 0) {
+        let update_query = `UPDATE item SET status='on hold' WHERE callNumber="${req.body['call-number']}"`;
+        connection.query(update_query, (err, row, fileds) => console.log(row));
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items posted to hold'});
+    });
+  });
+
+}
+
+// TODO: confirm PK of wishlist, currently not listed in MySQL
+app.post("/api/wish-list", (req, res) => {
+  let validation_query = `SELECT * FROM wishlist 
+                          WHERE callNumber="${req.body['call-number']}" 
+                          AND libraryCardNumber="${req.body['card-number']}"`;
+
+  connection.query(validation_query, (err, row, fields) => {
+    console.log(row);
+    if (Object.keys(row).length === 0) {
+      return insertToWishList(req, res);
+    }
+    return res.status(502).json({error: 'Item already in wishlist!'});
+  });
+
+})
+
+insertToWishList = (req, res) => {
+  let sql_query = `INSERT INTO wishlist VALUES(${req.body['call-number']}, ${req.body['card-number']})`;
+  connection.query(sql_query, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length !== 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items posted to wishlist'});
+    });
+}
 
 // add an item to the system
 //TODO: need to finish + test
