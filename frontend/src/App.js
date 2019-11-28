@@ -88,6 +88,9 @@ class App extends React.Component {
               <Route path="/holds">
                 <Navigation><Holds/></Navigation>
               </Route>
+              <Route path="/log-out">
+                <Home/>
+              </Route>
               <Route path="/item">
                 <Navigation><ItemPage/></Navigation>
               </Route>

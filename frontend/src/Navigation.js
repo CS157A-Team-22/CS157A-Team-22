@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withFirebase } from './Firebase/context';
+
 import styles from './config/materialCss';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -38,9 +40,17 @@ class Navigation extends Component {
         this.setState({open: true});
     }
 
+    /*
+        Takes a text element in the sidebar such as "Reading history", converts it into
+        "reading-history" and switches to its corresponding react route. 
+        If user selects "Log Out", perform sign out process on Firebase
+    */
     handleListItemClick = (text) => {
         console.log(text);
         let url = text.split(' ').join('-').toLowerCase();
+        if (text === "Log Out") {
+            this.props.firebase.doSignOut()
+        }
         this.props.history.push(`/${url}`);
     }
 
@@ -107,11 +117,16 @@ class Navigation extends Component {
                     </List>
                     <Divider />
                     <List>
-                        {['Fees', 'Logout'].map((text, index) => (
+                        {['Fees'].map((text, index) => (
                         <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                             <ListItemText primary={text} />
                         </ListItem>
                         ))}
+                        <ListItem>
+                            <button type="button" onClick={() => this.handleListItemClick("Log Out")}>
+                                Log Out
+                            </button> 
+                        </ListItem>
                     </List>
                 </Drawer>    
                 <main
@@ -126,4 +141,4 @@ class Navigation extends Component {
     }
 }
  
-export default withRouter(withStyles(materialCss, { withTheme: true })(Navigation));
+export default withRouter(withStyles(materialCss, { withTheme: true })(withFirebase(Navigation)));
