@@ -15,12 +15,11 @@ class WishList extends Component {
     
     componentDidMount() {
         this.getUserInfo();
-        this.getWishListItems();
     }
 
     // hit the API endpoint to get the items from DB 
-    getWishListItems = () => {
-        let { userInfo } = this.state;
+    getWishListItems = (userInfo) => {
+        console.log("userinfo: ", userInfo);
         axiosClient.fetch.getWishListItems({
             params: { userInfo }
         })
@@ -41,6 +40,7 @@ class WishList extends Component {
         .then(res => {
             console.log(res);
             this.setState({ userInfo: res.data[0] })
+            this.getWishListItems(res.data[0]);
         })
         .catch(err => {
             console.log("Error in getting user info: ", err);

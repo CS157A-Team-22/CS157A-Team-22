@@ -15,16 +15,35 @@ class ItemPage extends Component {
         this.state = {
             details: {}, 
             wishList: false,
-            hold: false
+            hold: false,
+            userInfo: {}
         };
+    }
+
+    componentDidMount() {
+        this.getUserInfo();
+    }
+
+    getUserInfo = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserInfo({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ userInfo: res.data[0] })
+        })
+        .catch(err => {
+            console.log("Error in getting user info: ", err);
+        })
     }
 
     handleAddToWishList = () =>{
         let { item } = this.props.location.state;
-
+        let { userInfo } = this.state;
         axiosClient.update.addToWishList({
             'call-number': item.callNumber,
-            'card-number': '14'
+            'card-number': userInfo.libraryCardNumber
         })
         .then(res => {
             console.log("added to wishlist successfully");
@@ -41,10 +60,10 @@ class ItemPage extends Component {
 
     handlePlaceHold = () => {
         let { item } = this.props.location.state;
-
+        let { userInfo } = this.state;
         axiosClient.update.addToHold({
             'call-number': item.callNumber,
-            'card-number': '14'
+            'card-number': userInfo.libraryCardNumber
         })
         .then(res => {
             console.log("added to hold successfully");

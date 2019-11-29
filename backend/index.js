@@ -86,15 +86,13 @@ app.get("/api/user-info", (req, res) => {
 app.get("/api/wish-list", (req, res) => {
 
   // get card number of given authUser
-  let userInfo = req.query['userInfo'];
-  console.log(userInfo.email);
-
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
                     FROM item Item, wishlist 
                     WHERE Item.callNumber = wishlist.callNumber AND
                           libraryCardNumber IN (SELECT libraryCardNumber 
                                                 FROM user 
-                                                WHERE email="${userInfo.email}")`; 
+                                                WHERE email="${userInfo['email']}")`; 
   connection.query(sql_query, (err, row, fields) => {
     console.log(row);
     if (Object.keys(row).length != 0) {
@@ -190,8 +188,6 @@ insertToHolds = (req, res) => {
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.post("/api/wish-list", (req, res) => {
-  let authUser = JSON.parse(req.query['authUser']);
-
   let validation_query = `SELECT * FROM wishlist 
                           WHERE callNumber="${req.body['call-number']}" 
                           AND libraryCardNumber="${req.body['card-number']}"`;
@@ -206,7 +202,7 @@ app.post("/api/wish-list", (req, res) => {
 
 })
 
-insertToWishList = (req, res) => {
+insertToWishList = (req, res, userInfo) => {
   let sql_query = `INSERT INTO wishlist VALUES(${req.body['call-number']}, ${req.body['card-number']})`;
   connection.query(sql_query, (err, row, fields) => {
       console.log(row);
