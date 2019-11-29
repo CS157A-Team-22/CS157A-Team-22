@@ -67,6 +67,21 @@ app.get('/remove-item/:callNum', (req, res) => {
   })
 })
 
+app.get("/api/user-info", (req, res) => {
+  let authUser = JSON.parse(req.query['authUser']);
+
+  let sql_query = `SELECT * FROM user
+                    WHERE email="${authUser.email}"`;
+
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No user found'});
+  });
+});
+
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
 
@@ -81,12 +96,12 @@ app.get("/api/wish-list", (req, res) => {
                                                 FROM user 
                                                 WHERE email="${authUser.email}")`; 
   connection.query(sql_query, (err, row, fields) => {
-      console.log(row);
-      if (Object.keys(row).length != 0) {
-        return res.status(200).json(row);
-      }
-      return res.status(502).json({error: 'No items in wishlist'});
-    });
+    console.log(row);
+    if (Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No items in wishlist'});
+  });
 })
 
 app.get("/api/holds", (req, res) => {

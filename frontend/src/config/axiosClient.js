@@ -25,6 +25,9 @@ export default {
         },
         getHolds(body) {
             return axiosClient.get('/holds', body);
+        },
+        getUserInfo(body) {
+            return axiosClient.get('/user-info', body);
         }
     },
     update: {

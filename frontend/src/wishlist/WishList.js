@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-
 import axiosClient from '../config/axiosClient';
 import WishListTable from './WishListTable';
 
@@ -10,13 +9,13 @@ class WishList extends Component {
         super(props);
         this.state = {
             items: [],
-            name: 'Sarah',
-            open: false
+            userInfo: {}
         };
     }
     
     componentDidMount() {
         this.getWishListItems();
+        this.getUserInfo();
     }
 
     // hit the API endpoint to get the items from DB 
@@ -34,6 +33,20 @@ class WishList extends Component {
         })
     }
 
+    getUserInfo = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserInfo({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ userInfo: res.data[0] })
+        })
+        .catch(err => {
+            console.log("Error in getting user info: ", err);
+        })
+    }
+
     handleClickListItem = (item) => {
         this.props.history.push({
             pathname: '/item',
@@ -46,7 +59,7 @@ class WishList extends Component {
         console.log(typeof authUser);
         return ( 
             <>
-                <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.props.authUser.name }'s Wishlist!</h1>
+                <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.state.userInfo.firstName }'s Wishlist!</h1>
                 {this.state.items.length === 0 ? 
                     <p style={{textAlign: 'center'}}>No items in wishlist</p> : 
                     <WishListTable items={this.state.items} style={{margin: '0 auto'}} onClick={this.handleClickListItem}/>}
