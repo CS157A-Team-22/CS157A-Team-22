@@ -14,15 +14,15 @@ class WishList extends Component {
     }
     
     componentDidMount() {
-        this.getWishListItems();
         this.getUserInfo();
+        this.getWishListItems();
     }
 
     // hit the API endpoint to get the items from DB 
     getWishListItems = () => {
-        let { authUser } = this.props;
+        let { userInfo } = this.state;
         axiosClient.fetch.getWishListItems({
-            params: { authUser }
+            params: { userInfo }
         })
         .then(res => {
             console.log("wishlist items fetched successfully");
