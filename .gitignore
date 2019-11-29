@@ -3,3 +3,5 @@
 
 #ignore environment config file
 development.env
+
+.idea

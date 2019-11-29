@@ -21,8 +21,9 @@ class WishList extends Component {
 
     // hit the API endpoint to get the items from DB 
     getWishListItems = () => {
+        let { authUser } = this.props;
         axiosClient.fetch.getWishListItems({
-            params: {'card-number': '14'}
+            params: { authUser }
         })
         .then(res => {
             console.log("wishlist items fetched successfully");
@@ -41,9 +42,11 @@ class WishList extends Component {
     }
 
     render() { 
+        let { authUser } = this.props;
+        console.log(typeof authUser);
         return ( 
             <>
-                <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.state.name }'s Wishlist!</h1>
+                <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '30px'}}>{ this.props.authUser.name }'s Wishlist!</h1>
                 {this.state.items.length === 0 ? 
                     <p style={{textAlign: 'center'}}>No items in wishlist</p> : 
                     <WishListTable items={this.state.items} style={{margin: '0 auto'}} onClick={this.handleClickListItem}/>}

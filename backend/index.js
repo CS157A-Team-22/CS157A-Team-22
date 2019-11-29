@@ -69,9 +69,17 @@ app.get('/remove-item/:callNum', (req, res) => {
 
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
+
+  // get card number of given authUser
+  let authUser = JSON.parse(req.query['authUser']);
+  console.log(authUser.email);
+
   let sql_query = `SELECT *
-                  FROM item Item, wishlist WHERE libraryCardNumber="${req.query['card-number']}" 
-                  AND Item.callNumber = wishlist.callNumber`;
+                    FROM item Item, wishlist 
+                    WHERE Item.callNumber = wishlist.callNumber AND
+                          libraryCardNumber IN (SELECT libraryCardNumber 
+                                                FROM user 
+                                                WHERE email="${authUser.email}")`; 
   connection.query(sql_query, (err, row, fields) => {
       console.log(row);
       if (Object.keys(row).length != 0) {
