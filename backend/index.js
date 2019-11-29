@@ -103,9 +103,10 @@ app.get("/api/wish-list", (req, res) => {
 })
 
 app.get("/api/holds", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
+
   let sql_query = `SELECT Item.name, holdDate
-                  FROM item Item, hold WHERE hold.libraryCardNumber="${req.query['card-number']}"
+                  FROM item Item, hold WHERE hold.libraryCardNumber="${userInfo['libraryCardNumber']}"
                   AND Item.callNumber = hold.callNumber
                   AND hold.holdDate > NOW()`;
   connection.query(sql_query, (err, row, fields) => {
