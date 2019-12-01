@@ -63,12 +63,14 @@ class CheckedOut extends React.Component {
                         <TableCell align="left">{item.dueDate.substring(0,10)}</TableCell>
                         <TableCell align="left">{item.numberRenewals}</TableCell>
                         <TableCell align="left">{item.overdue === 0 ? 'No' : 'Yes'}</TableCell>
-                        <Button 
-                            type="submit" 
-                            variant="contained" 
-                            color="secondary"
-                            style={{margin: '4%'}}>Renew
-                        </Button>
+                        <TableCell align="left">
+                          <Button 
+                              type="submit" 
+                              variant="contained" 
+                              color="secondary"
+                              style={{margin: '4%'}}>Renew
+                          </Button>
+                        </TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
