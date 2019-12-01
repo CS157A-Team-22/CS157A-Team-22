@@ -31,10 +31,27 @@ class ItemPage extends Component {
         })
         .then(res => {
             console.log(res);
-            this.setState({ userInfo: res.data[0] })
+            this.setState({ userInfo: res.data[0] });
+            this.getDetails();
         })
         .catch(err => {
             console.log("Error in getting user info: ", err);
+        })
+    }
+
+    getDetails = () => {
+        console.log('getting details');
+        let { item } = this.props.location.state;
+
+        axiosClient.fetch.getItemDetails({
+            params: { 'call-number': item.callNumber }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ details: res.data[0] });
+        })
+        .catch(err => {
+            console.log("Error in getting item details: ", err);
         })
     }
 
@@ -80,6 +97,7 @@ class ItemPage extends Component {
 
     render() {
         let { item } = this.props.location.state;
+        let { details } = this.state;
         return ( 
             <>
             <Card style={{
@@ -100,6 +118,24 @@ class ItemPage extends Component {
                     <Typography variant="body2" component="p">
                         Call number: { item.callNumber }
                     </Typography>
+                    {
+                        details.author && 
+                        <Typography variant="body2" component="p">
+                            Author: { details.author }
+                        </Typography>
+                    }
+                    {
+                        details.actor && 
+                        <Typography variant="body2" component="p">
+                            Actor: { details.actor }
+                        </Typography>
+                    }
+                    {
+                        details.actor &&
+                        <Typography variant="body2" component="p">
+                            Director: { details.director }
+                        </Typography>
+                    }
                     <Typography variant="body2" component="p">
                         <br/>
                         Status: { item.status }

@@ -39,6 +39,32 @@ app.get('/api/items', (req, res) => {
   });
 });
 
+// get details of item in inventory
+app.get('/api/item', (req, res) => {
+  // let authUser = JSON.parse(req.query['authUser']);
+  console.log(req.query['call-number']);
+  console.log("hitting route");
+  let book_query = `SELECT * from book, item  WHERE item.callNumber="${req.query['call-number']}" and item.callNumber=book.callNumber`;
+  connection.query(book_query, (err, row, fields) => {
+    console.log(row);
+    // if there are items in the row array 
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    } else {
+      let movie_query = `SELECT * from movie, item  WHERE item.callNumber="${req.query['call-number']}" and item.callNumber=movie.callNumber`;
+      connection.query(movie_query, (err, row, fields) => {
+        console.log(row);
+        // if there are items in the row array 
+        if (row !== undefined && Object.keys(row).length != 0) {
+          return res.status(200).json(row);
+        } else {
+          return res.status(502).json({error: 'Cannot find item'});
+        }
+      });
+    }  
+  });
+});
+
 // react test
 app.get('/react-test', (req, res) => res.send('Hi React, I\'m express.'))
 
