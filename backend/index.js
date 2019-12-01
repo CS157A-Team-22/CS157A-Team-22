@@ -131,9 +131,9 @@ app.get("/api/holds", (req, res) => {
 // })
 
 app.get("/api/reading-history", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT Item.name, borrowDate, returnDate, numberRenewals, overdue 
-                  FROM item Item, borrows WHERE libraryCardNumber="${req.query['card-number']}" 
+                  FROM item Item, borrows WHERE libraryCardNumber="${userInfo['libraryCardNumber']}" 
                   AND returnDate < NOW()
                   AND Item.callNumber = borrows.callNumber`;
   connection.query(sql_query, (err, row, fields) => {

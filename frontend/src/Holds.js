@@ -49,7 +49,7 @@ class Holds extends React.Component {
     .catch(err => {
         console.log("Error in getting user info: ", err);
     })
-}
+  }
 
   render() {
     
