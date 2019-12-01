@@ -52,6 +52,18 @@ class CheckedOut extends React.Component {
     })
   }
 
+  handleRenew = (item) => {
+    axiosClient.update.renewItem({ item })
+    .then(res => {
+      alert("Item renewed successfully");
+      this.getItems(this.state.userInfo);
+    })
+    .catch(err => {
+      console.log("error in renewing item", err);
+      alert(err.response.data.error);
+    })
+  }
+
   render() {
     
     return (
@@ -91,7 +103,8 @@ class CheckedOut extends React.Component {
                               type="submit" 
                               variant="contained" 
                               color="secondary"
-                              style={{margin: '4%'}}>Renew
+                              style={{margin: '4%'}}
+                              onClick={() => this.handleRenew(item)}>Renew
                           </Button>
                         </TableCell>
                     </TableRow>

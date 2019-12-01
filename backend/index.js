@@ -219,7 +219,7 @@ app.post("/api/wish-list", (req, res) => {
 
 })
 
-insertToWishList = (req, res, userInfo) => {
+insertToWishList = (req, res) => {
   let sql_query = `INSERT INTO wishlist VALUES(${req.body['call-number']}, ${req.body['card-number']})`;
   connection.query(sql_query, (err, row, fields) => {
       console.log(row);
@@ -227,7 +227,51 @@ insertToWishList = (req, res, userInfo) => {
         return res.status(200).json(row);
       }
       return res.status(502).json({error: 'No items posted to wishlist'});
-    });
+  });
+}
+
+app.post('/api/checked-out', (req, res) => {
+  let item = req.body['item'];
+  let today = new Date();
+  let dueDate = new Date(item.dueDate);
+  let oneDay = 24 * 60 * 60 * 1000; 
+
+  console.log(item);
+  // check if item is in holds
+  if (item.status === 'on hold') {
+    return res.status(502).json({error: 'Item cannot be renewed because it is placed on hold!'});
+  } else if ( Math.round(Math.abs((dueDate - today) / oneDay)) <= 7) {
+    return renewItem(req, res);
+  } 
+  return res.status(502).json({error: 'Too early to renew item!'});
+})
+
+renewItem = (req, res) => {
+  let item = req.body['item'];
+  // alter due date
+  let dateString = getNewDate(item);
+  // increment renewals
+  // change overdue to false
+  let sql_query = `UPDATE borrows SET 
+                    dueDate="${dateString}",
+                    numberRenewals="${item.numberRenewals + 1}", 
+                    overdue=false
+                    WHERE callNumber="${item.callNumber}"`;
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (row !== undefined && Object.keys(row).length !== 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No items renewed!'});
+  });
+}
+
+getNewDate = (item) => {
+  let dueDate = new Date(item.dueDate);
+  // add loan period to current due date to update it
+  dueDate.setDate(dueDate.getDate() + item.loanPeriod);
+  // convert new date into string and return in this format: YYYY-MM-DD
+  return dueDate.getUTCFullYear() + '-' + `${dueDate.getMonth() + 1}` + '-' + dueDate.getUTCDate();
 }
 
 // add an item to the system

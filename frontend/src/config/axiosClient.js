@@ -39,6 +39,9 @@ export default {
         },
         addToHold(body) {
             return axiosClient.post('/holds', body);
+        },
+        renewItem(body) {
+            return axiosClient.post('/checked-out', body);
         }
     }
 }
