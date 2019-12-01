@@ -6,6 +6,7 @@ import ReadingHistory from './readingHistory/ReadingHistory';
 import Navigation from './Navigation';
 import Holds from './Holds';
 import ItemPage from './items/ItemPage';
+import CheckedOut from './CheckedOut';
 
 import {
   BrowserRouter as Router,
@@ -90,6 +91,9 @@ class App extends React.Component {
               </Route>
               <Route path="/item">
                 <Navigation><ItemPage/></Navigation>
+              </Route>
+              <Route path="/checked-out">
+                <Navigation><CheckedOut/></Navigation>
               </Route>
             </Switch>
         </Router>
