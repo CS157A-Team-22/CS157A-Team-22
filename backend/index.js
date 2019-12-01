@@ -119,10 +119,10 @@ app.get("/api/holds", (req, res) => {
 })
 
 app.get("/api/checked-out", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
                   FROM item, borrows 
-                  WHERE borrows.libraryCardNumber="${req.query['card-number']}"
+                  WHERE borrows.libraryCardNumber="${userInfo['libraryCardNumber']}"
                   AND item.callNumber = borrows.callNumber
                   AND borrows.returnDate IS NULL`;
   connection.query(sql_query, (err, row, fields) => {

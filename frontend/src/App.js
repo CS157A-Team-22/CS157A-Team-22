@@ -119,7 +119,9 @@ class App extends React.Component {
                 </Navigation>
               </Route>
               <Route path="/checked-out">
-                <Navigation><CheckedOut/></Navigation>
+                <Navigation authUser={authUser}>
+                  <CheckedOut authUser={authUser}/>
+                </Navigation>
               </Route>
             </Switch>
         </Router>
