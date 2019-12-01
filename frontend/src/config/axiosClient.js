@@ -28,6 +28,9 @@ export default {
         },
         getUserInfo(body) {
             return axiosClient.get('/user-info', body);
+        },
+        getCheckedOut(body) {
+            return axiosClient.get('/checked-out', body);
         }
     },
     update: {

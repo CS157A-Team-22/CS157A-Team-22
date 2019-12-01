@@ -118,6 +118,22 @@ app.get("/api/holds", (req, res) => {
     });
 })
 
+app.get("/api/checked-out", (req, res) => {
+  console.log(req.query);
+  let sql_query = `SELECT *
+                  FROM item, borrows 
+                  WHERE borrows.libraryCardNumber="${req.query['card-number']}"
+                  AND item.callNumber = borrows.callNumber
+                  AND borrows.returnDate IS NULL`;
+  connection.query(sql_query, (err, row, fields) => {
+      console.log(row);
+      if (Object.keys(row).length != 0) {
+        return res.status(200).json(row);
+      }
+      return res.status(502).json({error: 'No items currently checked out!'});
+    });
+})
+
 // app.get("/api/checked-out", (req, res) => {
 //   console.log(req.query);
 //   connection.query(SELECT_ALL_QRY + 
