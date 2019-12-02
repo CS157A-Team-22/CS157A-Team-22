@@ -157,20 +157,27 @@ app.get("/api/checked-out", (req, res) => {
         return res.status(200).json(row);
       }
       return res.status(502).json({error: 'No items currently checked out!'});
-    });
+  });
 })
 
-// app.get("/api/checked-out", (req, res) => {
-//   console.log(req.query);
-//   connection.query(SELECT_ALL_QRY + 
-//       `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
-//       console.log(row);
-//       if (Object.keys(row).length != 0) {
-//         return res.status(200).json(row);
-//       }
-//       return res.status(502).json({error: 'No items in wishlist'});
-//     });
-// })
+// returns overdue items for frontend to calculate specific fees
+app.get("/api/fees", (req, res) => {
+  let userInfo = JSON.parse(req.query['userInfo']);
+
+  // lateFee from item, overdue from borrows, libraryCardNumber from borrows
+  let sql_query = `SELECT *
+                  FROM item, borrows 
+                  WHERE borrows.libraryCardNumber="${userInfo['libraryCardNumber']}"
+                  AND borrows.overdue = true
+                  AND borrows.callNumber = item.callNumber`;
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No overdue items!'});
+  });
+})
 
 app.get("/api/reading-history", (req, res) => {
   let userInfo = JSON.parse(req.query['userInfo']);

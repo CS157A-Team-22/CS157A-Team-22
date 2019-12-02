@@ -2,6 +2,12 @@
 .DS_store
 
 #ignore environment config file
+.env
+
+# ignore Mac system files
+.DS_store
+
+#ignore environment config file
 development.env
 
 .idea

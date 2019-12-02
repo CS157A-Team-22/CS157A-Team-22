@@ -34,6 +34,9 @@ export default {
         },
         getCheckedOut(body) {
             return axiosClient.get('/checked-out', body);
+        },
+        getFees(body) {
+            return axiosClient.get('/fees', body);
         }
     },
     update: {

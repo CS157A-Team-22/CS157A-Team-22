@@ -7,6 +7,7 @@ import Navigation from './Navigation';
 import Holds from './Holds';
 import ItemPage from './items/ItemPage';
 import CheckedOut from './CheckedOut';
+import Fees from './Fees';
 
 import {
   BrowserRouter as Router,
@@ -121,6 +122,11 @@ class App extends React.Component {
               <Route path="/checked-out">
                 <Navigation authUser={authUser}>
                   <CheckedOut authUser={authUser}/>
+                </Navigation>
+              </Route>
+              <Route path="/fees">
+                <Navigation authUser={authUser}>
+                  <Fees authUser={authUser}/>
                 </Navigation>
               </Route>
             </Switch>
