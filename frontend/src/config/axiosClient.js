@@ -33,6 +33,9 @@ export default {
         },
         addToHold(body) {
             return axiosClient.post('/holds', body);
+        },
+        checkIn(body) {
+            return axiosClient.post('/check-in', body);
         }
     }
 }

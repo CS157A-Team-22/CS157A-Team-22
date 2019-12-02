@@ -192,6 +192,25 @@ insertToWishList = (req, res) => {
     });
 }
 
+
+
+
+app.post('/api/check-in', (req, res) => {
+  let query = `SELECT * FROM borrows 
+               WHERE callNumber = "${req.body['CallNumber']}" 
+               AND returnDate IS NULL;`;
+  console.log(query)
+  connection.query(query, (err, row, fields) => {
+    console.log(row);
+    if (Object.keys(row).length !== 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'That item is not currently checked out'});
+  })
+})
+
+
+
 // add an item to the system
 //TODO: need to finish + test
 app.post('/add-item', (req, res) => {

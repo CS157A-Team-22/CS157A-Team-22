@@ -30,7 +30,7 @@ class CheckOut extends Component {
     // }).then( res => {
     //  console.log("login response", res);
       alert("Checked out " + CallNumber + "to " + LibraryCardNumber);
-      this.props.history.push('/items');
+      this.props.history.push('/check-out');
     // }).catch(err => {
     //   console.log("login error", err);
     // })

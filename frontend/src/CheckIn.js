@@ -23,13 +23,13 @@ class CheckIn extends Component {
   handleSubmit = e => {
     e.preventDefault();
     let { CallNumber } = this.state;
-    let date = new Date();
-    let today = date.getMonth() + " " + date.getDay() + " " + date.getYear();
-      alert("Checked in " + CallNumber + " on " + today);
-      this.props.history.push('/items');
-    // }).catch(err => {
-    //   console.log("login error", err);
-    // })
+    axiosClient.update.checkIn({CallNumber}).then( res => {
+      console.log("test response", res);
+    alert(`Checked in ${CallNumber}`);
+      this.props.history.push('/check-in');
+    }).catch(err => {
+      console.log("CheckIn error", err);
+    })
     console.log("form submitted!");
   }
 
