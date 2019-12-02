@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
 
 const SELECT_ALL_QRY = 'SELECT * FROM '
-const ITEM_DB = 'item(callNumber, purchasePrice, donated, type, status, genre, name, releaseDate, loanPeriod, lateFee'
 
 
 // GET requests
@@ -84,9 +83,69 @@ app.get('/search-all/:name', (req, res) => {
   })
 })
 
+// search all items by cal number with call number parameter from url
+app.get('/search-all/:callNo', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' item WHERE author='+req.params.callNo, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all movies by director with director parameter from url
+app.get('/search-all-movies/:director', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' movie WHERE director='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all movies by actor with actor parameter from url
+app.get('/search-all-movies/:actor', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' movie WHERE actor='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all books by author with author parameter from url
+app.get('/search-all-movies/:author', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' book WHERE author='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
 // remove item by call number from library
 //TODO: test this
 app.get('/remove-item/:callNum', (req, res) => {
+
+  // delete from tables with callNum as foreign key first
+  connection.query('DELETE FROM movie WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM book WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM borrows WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM hold WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM wishlist WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  // finally delete from item
   connection.query('DELETE FROM item WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
@@ -108,7 +167,6 @@ app.get("/api/user-info", (req, res) => {
   });
 });
 
-// TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
 
   // get card number of given authUser
@@ -313,7 +371,7 @@ app.post('/add-item', (req, res) => {
   let newItem = req.body
 
   console.log('---add-item not implemented---\n')
-  // connection.query('INSERT INTO' + ITEM_DB + ' VALUE()')
+  // connection.query('INSERT INTO item ' + ' VALUE()')
 })
 
 // add a new user
