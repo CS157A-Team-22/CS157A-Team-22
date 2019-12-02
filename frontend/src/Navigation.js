@@ -20,6 +20,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HomeIcon from '@material-ui/icons/Home';
+import Button from '@material-ui/core/Button';
 
 const materialCss = styles;
 
@@ -123,9 +124,14 @@ class Navigation extends Component {
                         </ListItem>
                         ))}
                         <ListItem>
-                            <button type="button" onClick={() => this.handleListItemClick("Log Out")}>
+                            <Button 
+                                type="submit" 
+                                variant="contained" 
+                                color="secondary"
+                                onClick={() => this.handleListItemClick("Log Out")}
+                            >
                                 Log Out
-                            </button> 
+                            </Button> 
                         </ListItem>
                     </List>
                 </Drawer>    
