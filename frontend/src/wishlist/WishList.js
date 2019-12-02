@@ -14,7 +14,11 @@ class WishList extends Component {
     }
     
     componentDidMount() {
-        this.getUserInfo();
+        if (this.props.authUser) {
+            this.getUserInfo();        
+        } else {
+            this.props.history.push('/');
+        }
     }
 
     // hit the API endpoint to get the items from DB 

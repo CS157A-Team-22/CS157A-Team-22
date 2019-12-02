@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 
 import axiosClient from './config/axiosClient';
+import { withRouter } from 'react-router-dom';
 
 class Fees extends Component {
 
@@ -15,7 +16,11 @@ class Fees extends Component {
     }
 
     componentDidMount() {
-        this.getUserInfo();
+        if (this.props.authUser) {
+            this.getUserInfo();
+        } else {
+            this.props.history.push('/');
+        }
     }
 
     getUserInfo = () => {
@@ -83,4 +88,4 @@ class Fees extends Component {
     }
 }
  
-export default Fees;
+export default withRouter(Fees);

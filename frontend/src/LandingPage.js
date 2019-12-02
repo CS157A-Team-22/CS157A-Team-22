@@ -3,6 +3,7 @@ import React from 'react';
 import ItemViewer from './items/ItemViewer';
 import SearchBar from './items/SearchBar';
 import axiosClient from './config/axiosClient';
+import { withRouter } from 'react-router-dom';
 
 class LandingPage extends React.Component {
 
@@ -15,7 +16,11 @@ class LandingPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getItems();
+    if (this.props.authUser) {
+      this.getItems();
+    } else {
+      this.props.history.push('/');
+    }
   }
 
   // hit the API endpoint to get the items from DB 
@@ -53,4 +58,4 @@ class LandingPage extends React.Component {
   }
 }
 
-export default LandingPage;
+export default withRouter(LandingPage);
