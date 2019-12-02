@@ -4,39 +4,62 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
 
+import { withFirebase } from './Firebase/context';
+
 import axiosClient from './config/axiosClient';
+
+const INITIAL_STATE = {
+  firstName: '', 
+  lastName: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+  error: null
+};
 
 class NewUserForm extends Component {
 
   constructor(props) {
     super(props);
-    
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '', 
-      password: '',
-      passwordConfirmation: ''
-      
-    }
+    this.state = { ...INITIAL_STATE }
   }
 
   handleSubmit = e => {
     e.preventDefault();
   
     // TODO validate password 
-    let { firstName, lastName, email, password, passwordConfirmation } = this.state;
-    axiosClient.auth.signup({
-      firstName, 
-      lastName,
-      email, 
-      password
-    }).then( res => {
-      console.log("sign up response", res);
-      this.props.history.push('/items');
-    }).catch(err => {
-      console.log("sign up error", err);
-    })
+    let { firstName, lastName, email, password } = this.state;
+
+    if (password.length < 6) {
+      this.setState({error: {message: 'Password must have at least 6 characters'}});
+    } else {
+      axiosClient.auth.signup({
+        firstName, 
+        lastName,
+        email
+      }).then( res => {
+        console.log("sign up response", res);
+  
+        // authenticate with firebase
+        this.props.firebase
+          .doCreateUserWithEmailAndPassword(email, password)
+          .then(authUser => {
+            // reset form fields
+            console.log(authUser);
+            this.setState({ ...INITIAL_STATE });
+            // pass info to backend to store in SQL DB
+            this.props.history.push('/items');
+          })
+          .catch(error => {
+            this.setState({ error });
+          });
+          
+      }).catch(err => {
+        console.log("sign up error", err);
+      })
+      
+    }
+
     console.log("form submitted!");
   }
 
@@ -47,6 +70,20 @@ class NewUserForm extends Component {
   }
 
   render() {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordConfirmation,
+      error
+    } = this.state;
+
+    const isInvalid =
+      password !== passwordConfirmation ||
+      password === '' ||
+      email === '';
+
     return (
       <>
       <Container maxWidth="sm" style=
@@ -66,7 +103,7 @@ class NewUserForm extends Component {
                 type="text" 
                 id="firstName" 
                 name="firstName" 
-                value={this.state.firstName}
+                value={firstName}
                 onChange={this.handleChange}
                 required
               />
@@ -78,7 +115,7 @@ class NewUserForm extends Component {
                 type="text" 
                 id="lastName" 
                 name="lastName" 
-                value={this.state.lastName}
+                value={lastName}
                 onChange={this.handleChange}
                 required
               />
@@ -90,7 +127,7 @@ class NewUserForm extends Component {
                 type="email" 
                 id="email" 
                 name="email" 
-                value={this.state.email}
+                value={email}
                 onChange={this.handleChange}
                 required
               />
@@ -101,8 +138,9 @@ class NewUserForm extends Component {
               <Input
                 type="password" 
                 id="password" 
-                name="password" 
-                value={this.state.password}
+                name="password"
+                minLength="6" 
+                value={password}
                 onChange={this.handleChange}
                 required
               />
@@ -113,7 +151,8 @@ class NewUserForm extends Component {
                 type="password" 
                 id="passwordConfirmation" 
                 name="passwordConfirmation" 
-                value={this.state.passwordConfirmation}
+                minLength="6"
+                value={passwordConfirmation}
                 onChange={this.handleChange}
                 required
               />
@@ -123,8 +162,11 @@ class NewUserForm extends Component {
                 type="submit" 
                 variant="contained" 
                 color="primary"
+                disabled={isInvalid}
                 style={{margin: '4% 0'}}> Sign Up
-              </Button>  
+              </Button> 
+
+              {error && <p>{error.message}</p>}
             </FormControl>
           </FormGroup>
         </form>
@@ -134,4 +176,5 @@ class NewUserForm extends Component {
   }
 
 }
-export default withRouter(NewUserForm);
+
+export default withRouter(withFirebase(NewUserForm));

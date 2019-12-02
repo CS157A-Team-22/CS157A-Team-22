@@ -15,16 +15,52 @@ class ItemPage extends Component {
         this.state = {
             details: {}, 
             wishList: false,
-            hold: false
+            hold: false,
+            userInfo: {}
         };
+    }
+
+    componentDidMount() {
+        this.getUserInfo();
+    }
+
+    getUserInfo = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserInfo({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ userInfo: res.data[0] });
+            this.getDetails();
+        })
+        .catch(err => {
+            console.log("Error in getting user info: ", err);
+        })
+    }
+
+    getDetails = () => {
+        console.log('getting details');
+        let { item } = this.props.location.state;
+
+        axiosClient.fetch.getItemDetails({
+            params: { 'call-number': item.callNumber }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ details: res.data[0] });
+        })
+        .catch(err => {
+            console.log("Error in getting item details: ", err);
+        })
     }
 
     handleAddToWishList = () =>{
         let { item } = this.props.location.state;
-
+        let { userInfo } = this.state;
         axiosClient.update.addToWishList({
             'call-number': item.callNumber,
-            'card-number': '14'
+            'card-number': userInfo.libraryCardNumber
         })
         .then(res => {
             console.log("added to wishlist successfully");
@@ -41,10 +77,10 @@ class ItemPage extends Component {
 
     handlePlaceHold = () => {
         let { item } = this.props.location.state;
-
+        let { userInfo } = this.state;
         axiosClient.update.addToHold({
             'call-number': item.callNumber,
-            'card-number': '14'
+            'card-number': userInfo.libraryCardNumber
         })
         .then(res => {
             console.log("added to hold successfully");
@@ -61,6 +97,7 @@ class ItemPage extends Component {
 
     render() {
         let { item } = this.props.location.state;
+        let { details } = this.state;
         return ( 
             <>
             <Card style={{
@@ -81,6 +118,24 @@ class ItemPage extends Component {
                     <Typography variant="body2" component="p">
                         Call number: { item.callNumber }
                     </Typography>
+                    {
+                        details.author && 
+                        <Typography variant="body2" component="p">
+                            Author: { details.author }
+                        </Typography>
+                    }
+                    {
+                        details.actor && 
+                        <Typography variant="body2" component="p">
+                            Actor: { details.actor }
+                        </Typography>
+                    }
+                    {
+                        details.actor &&
+                        <Typography variant="body2" component="p">
+                            Director: { details.director }
+                        </Typography>
+                    }
                     <Typography variant="body2" component="p">
                         <br/>
                         Status: { item.status }

@@ -17,6 +17,9 @@ export default {
         getItems() {
             return axiosClient.get('/items');
         },
+        getItemDetails(body) {
+            return axiosClient.get('/item', body);
+        },
         getWishListItems(body) {
             return axiosClient.get('/wish-list', body);
         },
@@ -26,8 +29,14 @@ export default {
         getHolds(body) {
             return axiosClient.get('/holds', body);
         },
+        getUserInfo(body) {
+            return axiosClient.get('/user-info', body);
+        },
         getCheckedOut(body) {
             return axiosClient.get('/checked-out', body);
+        },
+        getFees(body) {
+            return axiosClient.get('/fees', body);
         }
     },
     update: {
@@ -36,6 +45,9 @@ export default {
         },
         addToHold(body) {
             return axiosClient.post('/holds', body);
+        },
+        renewItem(body) {
+            return axiosClient.post('/checked-out', body);
         }
     }
 }

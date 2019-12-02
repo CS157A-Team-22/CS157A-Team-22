@@ -16,17 +16,18 @@ class CheckedOut extends React.Component {
     super(props);
     this.state = {
       items: [], 
-      open: false
+      open: false,
+      userInfo: {}
     };
   }
 
   componentDidMount() {
-    this.getItems();
+    this.getUserInfo();
   }
 
   // hit the API endpoint to get the items from DB 
-  getItems = () => {
-    axiosClient.fetch.getCheckedOut({ params: {'card-number': '1'} })
+  getItems = (userInfo) => {
+    axiosClient.fetch.getCheckedOut({ params: { userInfo } })
     .then(res => {
       console.log("Checked out items fetched successfully");
       this.setState({ items: res.data });
@@ -36,11 +37,45 @@ class CheckedOut extends React.Component {
     })
   }
 
+  getUserInfo = () => {
+    let { authUser } = this.props;
+    axiosClient.fetch.getUserInfo({
+        params: { authUser }
+    })
+    .then(res => {
+        console.log(res);
+        this.setState({ userInfo: res.data[0] })
+        this.getItems(res.data[0]);
+    })
+    .catch(err => {
+        console.log("Error in getting user info: ", err);
+    })
+  }
+
+  handleRenew = (item) => {
+    axiosClient.update.renewItem({ item })
+    .then(res => {
+      alert("Item renewed successfully");
+      this.getItems(this.state.userInfo);
+    })
+    .catch(err => {
+      console.log("error in renewing item", err);
+      alert(err.response.data.error);
+    })
+  }
+
   render() {
     
     return (
       <div>
-        <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '50px'}}>Sarah's Checked Out Items!</h1>
+        <h1 
+          style={{
+            textAlign: 'center', 
+            marginTop: '50px', 
+            marginBottom: '50px'}}
+        >
+          { this.state.userInfo.firstName }'s Checked Out Items!
+        </h1>
         <Paper style={{backgroundColor: 'rgb(255, 250, 227)', width: '75%', margin: '10px auto'}}>
             <Table aria-label="simple table">
                 <TableHead>
@@ -63,12 +98,15 @@ class CheckedOut extends React.Component {
                         <TableCell align="left">{item.dueDate.substring(0,10)}</TableCell>
                         <TableCell align="left">{item.numberRenewals}</TableCell>
                         <TableCell align="left">{item.overdue === 0 ? 'No' : 'Yes'}</TableCell>
-                        <Button 
-                            type="submit" 
-                            variant="contained" 
-                            color="secondary"
-                            style={{margin: '4%'}}>Renew
-                        </Button>
+                        <TableCell align="left">
+                          <Button 
+                              type="submit" 
+                              variant="contained" 
+                              color="secondary"
+                              style={{margin: '4%'}}
+                              onClick={() => this.handleRenew(item)}>Renew
+                          </Button>
+                        </TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

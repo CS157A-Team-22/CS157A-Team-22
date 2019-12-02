@@ -39,6 +39,32 @@ app.get('/api/items', (req, res) => {
   });
 });
 
+// get details of item in inventory
+app.get('/api/item', (req, res) => {
+  // let authUser = JSON.parse(req.query['authUser']);
+  console.log(req.query['call-number']);
+  console.log("hitting route");
+  let book_query = `SELECT * from book, item  WHERE item.callNumber="${req.query['call-number']}" and item.callNumber=book.callNumber`;
+  connection.query(book_query, (err, row, fields) => {
+    console.log(row);
+    // if there are items in the row array 
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    } else {
+      let movie_query = `SELECT * from movie, item  WHERE item.callNumber="${req.query['call-number']}" and item.callNumber=movie.callNumber`;
+      connection.query(movie_query, (err, row, fields) => {
+        console.log(row);
+        // if there are items in the row array 
+        if (row !== undefined && Object.keys(row).length != 0) {
+          return res.status(200).json(row);
+        } else {
+          return res.status(502).json({error: 'Cannot find item'});
+        }
+      });
+    }  
+  });
+});
+
 // react test
 app.get('/react-test', (req, res) => res.send('Hi React, I\'m express.'))
 
@@ -67,24 +93,46 @@ app.get('/remove-item/:callNum', (req, res) => {
   })
 })
 
+app.get("/api/user-info", (req, res) => {
+  let authUser = JSON.parse(req.query['authUser']);
+
+  let sql_query = `SELECT * FROM user
+                    WHERE email="${authUser.email}"`;
+
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No user found'});
+  });
+});
+
 // TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
+
+  // get card number of given authUser
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
-                  FROM item Item, wishlist WHERE libraryCardNumber="${req.query['card-number']}" 
-                  AND Item.callNumber = wishlist.callNumber`;
+                    FROM item Item, wishlist 
+                    WHERE Item.callNumber = wishlist.callNumber AND
+                          libraryCardNumber IN (SELECT libraryCardNumber 
+                                                FROM user 
+                                                WHERE email="${userInfo['email']}")`; 
   connection.query(sql_query, (err, row, fields) => {
-      console.log(row);
-      if (Object.keys(row).length != 0) {
-        return res.status(200).json(row);
-      }
-      return res.status(502).json({error: 'No items in wishlist'});
-    });
+    console.log(row);
+    if (Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No items in wishlist'});
+  });
 })
 
 app.get("/api/holds", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
+
   let sql_query = `SELECT Item.name, holdDate
-                  FROM item Item, hold WHERE hold.libraryCardNumber="${req.query['card-number']}"
+                  FROM item Item, hold WHERE hold.libraryCardNumber="${userInfo['libraryCardNumber']}"
                   AND Item.callNumber = hold.callNumber
                   AND hold.holdDate > NOW()`;
   connection.query(sql_query, (err, row, fields) => {
@@ -97,10 +145,10 @@ app.get("/api/holds", (req, res) => {
 })
 
 app.get("/api/checked-out", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
                   FROM item, borrows 
-                  WHERE borrows.libraryCardNumber="${req.query['card-number']}"
+                  WHERE borrows.libraryCardNumber="${userInfo['libraryCardNumber']}"
                   AND item.callNumber = borrows.callNumber
                   AND borrows.returnDate IS NULL`;
   connection.query(sql_query, (err, row, fields) => {
@@ -109,25 +157,32 @@ app.get("/api/checked-out", (req, res) => {
         return res.status(200).json(row);
       }
       return res.status(502).json({error: 'No items currently checked out!'});
-    });
+  });
 })
 
-// app.get("/api/checked-out", (req, res) => {
-//   console.log(req.query);
-//   connection.query(SELECT_ALL_QRY + 
-//       `hold WHERE libraryCardNumber="${req.query['card-number']}"`, (err, row, fields) => {
-//       console.log(row);
-//       if (Object.keys(row).length != 0) {
-//         return res.status(200).json(row);
-//       }
-//       return res.status(502).json({error: 'No items in wishlist'});
-//     });
-// })
+// returns overdue items for frontend to calculate specific fees
+app.get("/api/fees", (req, res) => {
+  let userInfo = JSON.parse(req.query['userInfo']);
+
+  // lateFee from item, overdue from borrows, libraryCardNumber from borrows
+  let sql_query = `SELECT *
+                  FROM item, borrows 
+                  WHERE borrows.libraryCardNumber="${userInfo['libraryCardNumber']}"
+                  AND borrows.overdue = true
+                  AND borrows.callNumber = item.callNumber`;
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No overdue items!'});
+  });
+})
 
 app.get("/api/reading-history", (req, res) => {
-  console.log(req.query);
+  let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT Item.name, borrowDate, returnDate, numberRenewals, overdue 
-                  FROM item Item, borrows WHERE libraryCardNumber="${req.query['card-number']}" 
+                  FROM item Item, borrows WHERE libraryCardNumber="${userInfo['libraryCardNumber']}" 
                   AND returnDate < NOW()
                   AND Item.callNumber = borrows.callNumber`;
   connection.query(sql_query, (err, row, fields) => {
@@ -205,7 +260,51 @@ insertToWishList = (req, res) => {
         return res.status(200).json(row);
       }
       return res.status(502).json({error: 'No items posted to wishlist'});
-    });
+  });
+}
+
+app.post('/api/checked-out', (req, res) => {
+  let item = req.body['item'];
+  let today = new Date();
+  let dueDate = new Date(item.dueDate);
+  let oneDay = 24 * 60 * 60 * 1000; 
+
+  console.log(item);
+  // check if item is in holds
+  if (item.status === 'on hold') {
+    return res.status(502).json({error: 'Item cannot be renewed because it is placed on hold!'});
+  } else if ( Math.round(Math.abs((dueDate - today) / oneDay)) <= 7) {
+    return renewItem(req, res);
+  } 
+  return res.status(502).json({error: 'Too early to renew item!'});
+})
+
+renewItem = (req, res) => {
+  let item = req.body['item'];
+  // alter due date
+  let dateString = getNewDate(item);
+  // increment renewals
+  // change overdue to false
+  let sql_query = `UPDATE borrows SET 
+                    dueDate="${dateString}",
+                    numberRenewals="${item.numberRenewals + 1}", 
+                    overdue=false
+                    WHERE callNumber="${item.callNumber}"`;
+  connection.query(sql_query, (err, row, fields) => {
+    console.log(row);
+    if (row !== undefined && Object.keys(row).length !== 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'No items renewed!'});
+  });
+}
+
+getNewDate = (item) => {
+  let dueDate = new Date(item.dueDate);
+  // add loan period to current due date to update it
+  dueDate.setDate(dueDate.getDate() + item.loanPeriod);
+  // convert new date into string and return in this format: YYYY-MM-DD
+  return dueDate.getUTCFullYear() + '-' + `${dueDate.getMonth() + 1}` + '-' + dueDate.getUTCDate();
 }
 
 // add an item to the system
@@ -224,8 +323,7 @@ app.post('/api/submit-new-user', (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
-    password: req.body.password,
-    libraryCardNumber: Math.floor(Math.random() * 10000)  /// ONLY TEMPORARY
+    libraryCardNumber: Math.floor(Math.random() * 10000)  //TODO: ONLY TEMPORARY
   }
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${newUser.email}"`, (err, row, fields) => {
     if (row[0]) {
@@ -239,15 +337,13 @@ app.post('/api/submit-new-user', (req, res) => {
 })
 
 // log in
-// TODO hash passwords, create cookies/sessions
+// TODO use firebase to authenticate now!
 app.post('/api/login', (req, res) => {
+  console.log("inside login route")
   connection.query(SELECT_ALL_QRY + 'user WHERE email="' + `${req.body.email}"`, (err, row, fields) => {
     if (row[0]) {
-      if (row[0].password === req.body.password) {
-        return res.status(200).json("valid user");
-      } else {
-        return res.status(400).json({error: 'Invalid User Credentials'});
-      }
+      console.log(row[0])
+      return res.status(200).json("valid user");
     } else {
       return res.status(400).json({error: 'Invalid User Credentials'});
     }

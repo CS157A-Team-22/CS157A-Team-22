@@ -7,6 +7,7 @@ import Navigation from './Navigation';
 import Holds from './Holds';
 import ItemPage from './items/ItemPage';
 import CheckedOut from './CheckedOut';
+import Fees from './Fees';
 
 import {
   BrowserRouter as Router,
@@ -15,32 +16,44 @@ import {
   Link
 } from "react-router-dom";
 
+import { withFirebase } from './Firebase/context';
+
 class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      data: "Nothing yet", 
-      rows: []
+      authUser: null
     };
   }
 
-  getData() {
-    let url = "http://127.0.0.1:5000/react-test"
-    let fetchMethod = { method: 'GET', mode: 'cors'}
-
-    let text
-
-    fetch(url, fetchMethod).then(res => {
-      res.text().then( theText => {
-        console.log(theText)
-        text = theText
-        console.log("After assignment")
-        console.log(text)
-        this.setState({data: text})  
-      })
-    })
+  componentDidMount() {
+    this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
+      authUser
+        ? this.setState({ authUser })
+        : this.setState({ authUser: null });
+    });
   }
+
+  componentWillUnmount() {
+    this.listener();
+  }
+  // getData() {
+  //   let url = "http://127.0.0.1:5000/react-test"
+  //   let fetchMethod = { method: 'GET', mode: 'cors'}
+
+  //   let text
+
+  //   fetch(url, fetchMethod).then(res => {
+  //     res.text().then( theText => {
+  //       console.log(theText)
+  //       text = theText
+  //       console.log("After assignment")
+  //       console.log(text)
+  //       this.setState({data: text})  
+  //     })
+  //   })
+  // }
 
   // testFull(table) {
   //   let url = "http://127.0.0.1:5000/full-test/" + table
@@ -70,30 +83,51 @@ class App extends React.Component {
   // }
 
   render() {
+    let { authUser } = this.state;
     return (
       <>
         <Router>
             <Switch>
               <Route path="/" exact={true}>
-                <Home/>
+                <Home authUser={authUser}/>
               </Route>
               <Route path="/items">
-                <Navigation><LandingPage /></Navigation>
+                <Navigation authUser={authUser}>
+                  <LandingPage authUser={authUser}/>
+                </Navigation>
               </Route>
               <Route path="/wish-list">
-                <Navigation><WishList/></Navigation>
+                <Navigation authUser={authUser}>
+                  <WishList authUser={authUser}/>
+                </Navigation>
               </Route>
               <Route path="/reading-history">
-                <Navigation><ReadingHistory/></Navigation>
+                <Navigation authUser={authUser}>
+                  <ReadingHistory authUser={authUser}/>
+                </Navigation>
               </Route>
               <Route path="/holds">
-                <Navigation><Holds/></Navigation>
+                <Navigation authUser={authUser}>
+                  <Holds authUser={authUser}/>
+                </Navigation>
+              </Route>
+              <Route path="/log-out">
+                <Home authUser={authUser}/>
               </Route>
               <Route path="/item">
-                <Navigation><ItemPage/></Navigation>
+                <Navigation authUser={authUser}>
+                  <ItemPage authUser={authUser}/>
+                </Navigation>
               </Route>
               <Route path="/checked-out">
-                <Navigation><CheckedOut/></Navigation>
+                <Navigation authUser={authUser}>
+                  <CheckedOut authUser={authUser}/>
+                </Navigation>
+              </Route>
+              <Route path="/fees">
+                <Navigation authUser={authUser}>
+                  <Fees authUser={authUser}/>
+                </Navigation>
               </Route>
             </Switch>
         </Router>
@@ -102,4 +136,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withFirebase(App);
