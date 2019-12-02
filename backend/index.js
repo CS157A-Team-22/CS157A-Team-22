@@ -196,18 +196,34 @@ insertToWishList = (req, res) => {
 
 
 app.post('/api/check-in', (req, res) => {
-  let query = `SELECT * FROM borrows 
+  let isCheckedOut = `SELECT * FROM borrows 
                WHERE callNumber = "${req.body['CallNumber']}" 
                AND returnDate IS NULL;`;
-  console.log(query)
-  connection.query(query, (err, row, fields) => {
-    console.log(row);
-    if (Object.keys(row).length !== 0) {
-      return res.status(200).json(row);
+  //console.log(isCheckedOut)
+  connection.query(isCheckedOut, (err, rows, fields) => {
+    //console.log(row);
+    if (rows.length !== 0) {
+      console.log(rows.length)
+      console.log(rows[0].libraryCardNumber);
+      return res.status(200).json(checkInItem(rows, req, res));
     }
     return res.status(502).json({error: 'That item is not currently checked out'});
   })
 })
+
+
+//TODO: Update Item Status, add applicable late fee to user account from the return
+checkInItem = (row, req, res) => {
+  let updateBorrows = `UPDATE borrows
+                       SET returnDate = NOW()
+                       WHERE callNumber = "${req.body['CallNumber']}"
+                       AND libraryCardNumber = "${row[0].libraryCardNumber}";`;
+  connection.query(updateBorrows, (err, rows, fields) => {
+    console.log(`Changed ${rows.changedRows} rows.`);
+  })
+  return `Checked in ${req.body['CallNumber']}`;
+}
+
 
 
 
