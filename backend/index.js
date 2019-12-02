@@ -195,6 +195,37 @@ insertToWishList = (req, res) => {
 
 
 
+
+
+
+//TODO: Update item status, validate that item is not checked out to another user. 
+app.post('/api/check-out', (req, res) => {
+  let CN = req.body['callNumber'];
+  let LCN = req.body['libraryCardNumber'];
+  console.log(CN + " " + LCN);
+  let getItem = `SELECT * FROM item
+                 WHERE callNumber = "${CN}";`;
+  let item
+  connection.query(getItem, (err, rows, fields) => {
+    if(rows.length === 1) {
+      item = rows[0];
+      let borrow = `INSERT INTO borrows (borrowDate, dueDate, overdue, returnDate, numberRenewals, callNumber, libraryCardNumber)
+                    VALUES (NOW(), DATE_ADD(NOW(), INTERVAL ${item.loanPeriod} DAY), 0, NULL, 0, ${CN}, ${LCN});`;
+      console.log(borrow);
+      connection.query(borrow, (err, rows, fields) => {
+        if(rows.affectedRows === 1) {
+          return res.status(200).json(`User ${LCN} has borrowed ${CN}`)
+        }
+      })
+    }
+  })
+  //return res.status(200).json("So Far, So Good");
+})
+
+
+
+
+
 app.post('/api/check-in', (req, res) => {
   let isCheckedOut = `SELECT * FROM borrows 
                WHERE callNumber = "${req.body['CallNumber']}" 
@@ -223,6 +254,10 @@ checkInItem = (row, req, res) => {
   })
   return `Checked in ${req.body['CallNumber']}`;
 }
+
+
+
+
 
 
 

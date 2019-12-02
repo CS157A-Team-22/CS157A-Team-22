@@ -16,24 +16,24 @@ class CheckOut extends Component {
     super(props);
     
     this.state = {
-      CallNumber: '', 
-      LibraryCardNumber: ''      
+      callNumber: '', 
+      libraryCardNumber: ''      
     }
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    let { CallNumber, LibraryCardNumber } = this.state;
-    //axiosClient.auth.CheckOut({
-    //   CallNumber,
-    //   LibraryCardNumber
-    // }).then( res => {
-    //  console.log("login response", res);
-      alert("Checked out " + CallNumber + "to " + LibraryCardNumber);
+    let { callNumber, libraryCardNumber } = this.state;
+    axiosClient.update.checkOut({
+      callNumber,
+      libraryCardNumber
+    }).then( res => {
+     console.log("login response", res);
+      alert("Checked out " + callNumber + "to " + libraryCardNumber);
       this.props.history.push('/check-out');
-    // }).catch(err => {
-    //   console.log("login error", err);
-    // })
+    }).catch(err => {
+      console.log("check out error", err);
+    })
     console.log("form submitted!");
   }
 
@@ -64,23 +64,23 @@ class CheckOut extends Component {
           <form onSubmit={this.handleSubmit} method="post">
             <FormGroup>
               <FormControl>
-                <InputLabel htmlFor="LibraryCardNumber">Library Card Number</InputLabel>
+                <InputLabel htmlFor="libraryCardNumber">Library Card Number</InputLabel>
                 <Input 
-                  type="LibraryCardNumber" 
-                  id="LibraryCardNumber" 
-                  name="LibraryCardNumber" 
-                  value={this.state.LibraryCardNumber}
+                  type="libraryCardNumber" 
+                  id="libraryCardNumber" 
+                  name="libraryCardNumber" 
+                  value={this.state.libraryCardNumber}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="CallNumber">Call Number</InputLabel>
+                <InputLabel htmlFor="callNumber">Call Number</InputLabel>
                 <Input
-                  type="CallNumber" 
-                  id="CallNumber" 
-                  name="CallNumber" 
-                  value={this.state.CallNumber}
+                  type="callNumber" 
+                  id="callNumber" 
+                  name="callNumber" 
+                  value={this.state.callNumber}
                   onChange={this.handleChange}
                   required
                 />

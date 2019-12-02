@@ -36,6 +36,9 @@ export default {
         },
         checkIn(body) {
             return axiosClient.post('/check-in', body);
+        },
+        checkOut(body) {
+            return axiosClient.post('/check-out', body);
         }
     }
 }
