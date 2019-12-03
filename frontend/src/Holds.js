@@ -7,6 +7,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import { withRouter } from 'react-router-dom';
+
 import axiosClient from './config/axiosClient';
 
 class Holds extends React.Component {
@@ -15,17 +17,22 @@ class Holds extends React.Component {
     super(props);
     this.state = {
       items: [], 
-      open: false
+      open: false, 
+      userInfo: {}
     };
   }
 
   componentDidMount() {
-    this.getHolds();
+    if (this.props.authUser) {
+      this.getUserInfo();
+    } else {
+      this.props.history.push('/');
+    }
   }
 
   // hit the API endpoint to get the items from DB 
-  getHolds = () => {
-    axiosClient.fetch.getHolds({ params: {'card-number': '14'} })
+  getHolds = (userInfo) => {
+    axiosClient.fetch.getHolds({ params: { userInfo } })
     .then(res => {
       console.log("items fetched successfully");
       this.setState({ items: res.data });
@@ -35,11 +42,33 @@ class Holds extends React.Component {
     })
   }
 
+  getUserInfo = () => {
+    let { authUser } = this.props;
+    axiosClient.fetch.getUserInfo({
+        params: { authUser }
+    })
+    .then(res => {
+        console.log(res);
+        this.setState({ userInfo: res.data[0] })
+        this.getHolds(res.data[0]);
+    })
+    .catch(err => {
+        console.log("Error in getting user info: ", err);
+    })
+  }
+
   render() {
     
     return (
       <div>
-        <h1 style={{textAlign: 'center', marginTop: '50px', marginBottom: '50px'}}>Sarah's Holds!</h1>
+        <h1 
+          style={{
+            textAlign: 'center', 
+            marginTop: '50px', 
+            marginBottom: '50px'}}
+        >
+          { this.state.userInfo.firstName }'s Holds!
+        </h1>
         {this.state.items.length === 0 ? <p style={{textAlign: 'center'}}>No items placed on hold</p> : this.renderTable()}
       </div>
     );
@@ -71,4 +100,4 @@ class Holds extends React.Component {
   }
 }
 
-export default Holds;
+export default withRouter(Holds);

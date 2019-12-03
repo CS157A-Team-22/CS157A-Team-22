@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withFirebase } from './Firebase/context';
+
 import styles from './config/materialCss';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -18,6 +20,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HomeIcon from '@material-ui/icons/Home';
+import Button from '@material-ui/core/Button';
+
+import axiosClient from './config/axiosClient';
 
 const materialCss = styles;
 
@@ -26,8 +31,31 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.state= {
-            open: false
+            open: false, 
+            options: []
         };
+    }
+
+    componentDidMount() {
+        if (this.props.authUser) {
+            this.getUserType();
+        } else {
+            this.props.history.push('/');
+        }
+    }
+
+    getUserType = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserType({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ options: res.data.options });
+        })
+        .catch(err => {
+            console.log("Error in getting user type: ", err);
+        }) 
     }
 
     handleDrawerClose = () => {
@@ -38,9 +66,17 @@ class Navigation extends Component {
         this.setState({open: true});
     }
 
+    /*
+        Takes a text element in the sidebar such as "Reading history", converts it into
+        "reading-history" and switches to its corresponding react route. 
+        If user selects "Log Out", perform sign out process on Firebase
+    */
     handleListItemClick = (text) => {
         console.log(text);
         let url = text.split(' ').join('-').toLowerCase();
+        if (text === "Log Out") {
+            this.props.firebase.doSignOut()
+        }
         this.props.history.push(`/${url}`);
     }
 
@@ -50,6 +86,7 @@ class Navigation extends Component {
 
     render() { 
         const { classes, theme } = this.props;
+        const { options } = this.state;
         return ( 
             <>
                 <AppBar 
@@ -99,7 +136,7 @@ class Navigation extends Component {
                     </div>
                     <Divider />
                     <List>
-                        {['Checked out', 'Wish list', 'Add New Item', 'Check In', 'Check Out','Reading history', 'Holds'].map((text, index) => (
+                        {options.map((text, index) => (
                         <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                             <ListItemText primary={text} />
                         </ListItem>
@@ -107,11 +144,16 @@ class Navigation extends Component {
                     </List>
                     <Divider />
                     <List>
-                        {['Fees', 'Logout'].map((text, index) => (
-                        <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
-                            <ListItemText primary={text} />
+                        <ListItem>
+                            <Button 
+                                type="submit" 
+                                variant="contained" 
+                                color="secondary"
+                                onClick={() => this.handleListItemClick("Log Out")}
+                            >
+                                Log Out
+                            </Button> 
                         </ListItem>
-                        ))}
                     </List>
                 </Drawer>    
                 <main
@@ -126,4 +168,4 @@ class Navigation extends Component {
     }
 }
  
-export default withRouter(withStyles(materialCss, { withTheme: true })(Navigation));
+export default withRouter(withStyles(materialCss, { withTheme: true })(withFirebase(Navigation)));
