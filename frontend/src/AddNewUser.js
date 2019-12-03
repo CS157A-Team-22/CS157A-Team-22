@@ -17,21 +17,13 @@ class AddNewItem extends Component {
     super(props);
     
     this.state = {
-      CallNumber: '',
-      purchasePrice: '',
-      donated: false,
-      type: '', 
-      status: '', 
-      genre: '',
-      name: '',
-      releaseDate: '',
-      loanPeriod: '',
-      lateFee: '',
+      libraryCardNumber: '',
+      firstName: '',
+      lastName: false,
+      email: '', 
+      password: '', 
 
-      actor: '',
-      director: '',
-
-      author: '',
+      librarian: false
     }
   }
 
@@ -85,28 +77,22 @@ class AddNewItem extends Component {
               backgroundColor: '#fffae3',
               minHeight: '50vh'
           }}>
-          <h1 style={{textAlign: 'center', marginTop: '10px'}}> Add a new item to the library inventory </h1>
-          <p style={{textAlign: 'center', marginTop: '10px'}}> Please enter information for the new item below. </p>
+          <h1 style={{textAlign: 'center', marginTop: '10px'}}> Add a new user to the system </h1>
+          <p style={{textAlign: 'center', marginTop: '10px'}}> Please the new user's information below. </p>
           <form onSubmit={this.handleSubmit} method="post">
             <FormGroup>
               <FormControl>
-                <InputLabel htmlFor="CallNumber">Call Number</InputLabel>
+                <InputLabel htmlFor="libraryCardNumber">Library Card Number</InputLabel>
                 <Input
-                  type="CallNumber" 
-                  id="CallNumber" 
-                  name="CallNumber" 
-                  value={this.state.CallNumber}
+                  type="libraryCardNumber" 
+                  id="libraryCardNumber" 
+                  name="libraryCardNumber" 
+                  value={this.state.libraryCardNumber}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
-              <FormControlLabel
-                control={<Checkbox checked={this.state.donated} 
-                                   onClick={this.handleDonatedCheckbox} 
-                                   value="Donated" />}
-                name="Donated"
-                label="Donated"
-              />
+             
               {this.state.donated ? "" : 
                 <FormControl>
                   <InputLabel htmlFor="PurchasePrice">Purchase Price</InputLabel>
@@ -184,54 +170,19 @@ class AddNewItem extends Component {
                                   label="Movie" />
               </RadioGroup>
 
-              { this.state.type === "Movie" ?
-                  <FormGroup>
-                    <FormControl>
-                      <InputLabel htmlFor="Actor">Actor</InputLabel>
-                      <Input
-                        type="Actor" 
-                        id="Actor" 
-                        name="Actor" 
-                        value={this.state.actor}
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <InputLabel htmlFor="Director">Director</InputLabel>
-                      <Input
-                        type="Director" 
-                        id="Director" 
-                        name="Director" 
-                        value={this.state.director}
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </FormControl>
-                  </FormGroup>
-                  : ""
-              }
-              { this.state.type === "Book" ?
-                <FormControl>
-                  <InputLabel htmlFor="Author">Author</InputLabel>
-                  <Input
-                    type="Author" 
-                    id="Author" 
-                    name="Author" 
-                    value={this.state.author}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </FormControl>
-                : ""
-              }
-
+              <FormControlLabel
+                control={<Checkbox checked={this.state.donated} 
+                                   onClick={this.handleDonatedCheckbox} 
+                                   value="Donated" />}
+                name="Donated"
+                label="Donated"
+              />
               <FormControl>
                 <Button 
                   type="submit" 
                   variant="contained" 
                   color="primary"
-                  style={{margin: '4% 0'}}> Add to Inventory
+                  style={{margin: '4% 0'}}> Add User
                 </Button>  
               </FormControl>
             </FormGroup>
@@ -243,4 +194,4 @@ class AddNewItem extends Component {
 
 }
 
-export default withRouter(AddNewItem);
+export default withRouter(AddNewUser);
