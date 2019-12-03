@@ -8,6 +8,7 @@ import Holds from './Holds';
 import ItemPage from './items/ItemPage';
 import CheckIn from './CheckIn'
 import CheckOut from './CheckOut'
+import AddNewItem from './AddNewItem'
 
 
 import {
@@ -94,11 +95,14 @@ class App extends React.Component {
               <Route path="/item">
                 <Navigation><ItemPage/></Navigation>
               </Route>
-               <Route path="/check-in">
+              <Route path="/check-in">
                 <Navigation><CheckIn/></Navigation>
               </Route>
-               <Route path="/check-out">
+              <Route path="/check-out">
                 <Navigation><CheckOut/></Navigation>
+              </Route>
+              <Route path="/add-new-item">
+                <Navigation><AddNewItem/></Navigation>
               </Route>
             </Switch>
         </Router>

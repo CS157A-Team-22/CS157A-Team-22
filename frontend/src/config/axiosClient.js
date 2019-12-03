@@ -39,6 +39,10 @@ export default {
         },
         checkOut(body) {
             return axiosClient.post('/check-out', body);
+        },
+        addItem(body) {
+            return axiosClient.post('/add-item', body);
         }
     }
+
 }

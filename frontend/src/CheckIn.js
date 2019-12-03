@@ -42,12 +42,6 @@ class CheckIn extends Component {
   }
 
 
-    handleListItemClick = (text) => {
-        console.log(text);
-        let url = text.split(' ').join('-').toLowerCase();
-        this.props.history.push(`/${url}`);
-    }
-
   render() {
     const { classes, theme } = this.props;
 
