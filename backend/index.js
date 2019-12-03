@@ -416,16 +416,22 @@ app.post('/api/check-out', (req, res) => {
   let CN = req.body['callNumber'];
   let LCN = req.body['libraryCardNumber'];
   let getItem = `SELECT * FROM item WHERE callNumber = "${CN}";`;
-  let item
+  let holdCheck = `SELECT * FROM hold WHERE callNumber ="${CN}" AND NOT libraryCardNumber ="${LCN}";`;
+
   connection.query(getItem, (err, rows, fields) => {
     if(rows.length === 1) {
-      item = rows[0];
-      //console.log(borrow);
-      console.log(item.status);
+      let item = rows[0]
       if(item.status === "loaned") {
-        res.status(200).send("That item is not available to be checked out.");
+        return res.status(200).send("That item is not available to be checked out.");
       } else {
-        return checkOutItem(item, CN, LCN, res);
+        connection.query(holdCheck, (err, rows, fields) => {
+          console.log("HOLD CHECK ROWS: ", rows.length)
+          if(rows.length > 0) {
+            return res.status(200).send("HOLD CHECK: That item is not available to be checked out.");
+          } else {
+            return checkOutItem(item, CN, LCN, res);    
+          }
+        })
       }
     }
   })
@@ -438,6 +444,9 @@ checkOutItem = (item, CN, LCN, res) => {
   let updateItem = `UPDATE item SET status = "loaned" WHERE callNumber = "${CN}";`;
   let borrow = `INSERT INTO borrows (borrowDate, dueDate, overdue, returnDate, numberRenewals, callNumber, libraryCardNumber)
                     VALUES (NOW(), DATE_ADD(NOW(), INTERVAL ${item.loanPeriod} DAY), 0, NULL, 0, ${CN}, ${LCN});`;
+  console.log(item)
+  console.log(updateItem)
+  console.log(borrow)
 
   connection.query(borrow, (err, rows, fields) => {
     if(rows.affectedRows === 1) {
@@ -449,6 +458,7 @@ checkOutItem = (item, CN, LCN, res) => {
     }              
   })
 }
+  
 
 
 
@@ -462,29 +472,50 @@ app.post('/api/check-in', (req, res) => {
     if (rows.length !== 0) {
       console.log(rows.length)
       console.log(rows[0].libraryCardNumber);
-      return checkInItem(rows, req, res);
+      let CN = req.body['CallNumber'];
+      let LCN = rows[0].libraryCardNumber;
+      let holdCheck = `SELECT * 
+                       FROM hold 
+                       WHERE callNumber ="${CN}" AND NOT libraryCardNumber ="${LCN}";`;
+      connection.query(holdCheck, (err, rows, fields) => {
+        if(rows.length > 0) {
+          return checkInItem(res, CN, LCN, "on hold");
+        } else {
+          return checkInItem(res, CN, LCN, "available");
+        }
+      })                 
+    } else {
+      return res.status(200).send("That item is not currently checked out");
     }
-    return res.status(200).send("That item is not currently checked out");
   })
 })
 
 
 //TODO: Update Item Status, add applicable late fee to user account from the return
-checkInItem = (row, req, res) => {
+checkInItem = (res, CN, LCN, newStatus) => {
   let updateBorrows = `UPDATE borrows SET returnDate = NOW()
-                       WHERE callNumber = "${req.body['CallNumber']}"
-                       AND libraryCardNumber = "${row[0].libraryCardNumber}";`;
-  let updateItem = `UPDATE item SET status = "available" WHERE callNumber = "${req.body['CallNumber']}";`;
+                       WHERE callNumber = "${CN}"
+                       AND libraryCardNumber = "${LCN}";`;
+
+
+  let updateItem = `UPDATE item SET status = "${newStatus}" WHERE callNumber = "${CN}";`;
+
+  console.log(updateBorrows)
+  console.log(updateItem)
 
   connection.query(updateBorrows, (err, rows, fields) => {
-    if(rows.affectedRows === 1) {
+    console.log(rows)
+    if(rows.changedRows === 1) {
+      console.log("BORROWS UPDATED")
       connection.query(updateItem, (err, rows, fields) => {
-        if(rows.affectedRows === 1) {
-          return res.status(200).send(`Item ${req.body['CallNumber']} has been checked in.`)
+        if(rows.changedRows === 1) {
+          console.log("ITEM UPDATED")
+          return res.status(200).send(`Item ${CN}s has been checked in.`)
         }
       })
-    }
+    } else {
     return res.status(500).send('There was a problem checking in this item'); 
+  }
   })
 }
 
