@@ -76,7 +76,7 @@ app.get('/api/user-type', (req, res) => {
       return res.status(200).json(
         {
           'type': 'librarian', 
-          'options': ['Check In', 'Check out', 'Add New Item', 'Generate Report']
+          'options': ['Check In', 'Check out', 'Add New Item', 'Generate Report', 'Checked out', 'Wish list', 'Reading history', 'Holds', 'Fees']
         }
       );
     } else {
