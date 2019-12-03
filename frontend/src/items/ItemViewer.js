@@ -13,7 +13,13 @@ const useStyles = theme => ({
 const ItemViewer = (props) => {
   const { classes, searchText, items } = props;
   debugger;
-  const filteredItems = items.filter(item => item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1);
+  const filteredItems = items.filter(item => 
+    item.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || 
+    item.genre.toLowerCase().indexOf(searchText.toLowerCase()) !== -1  
+    // (item.author && item.author.toLowerCase().indexOf(searchText.toLowerCase())) !== -1 || 
+    // (item.director && item.director.toLowerCase().indexOf(searchText.toLowerCase())) !== -1 ||
+    // (item.actor && item.actor.toLowerCase().indexOf(searchText.toLowerCase())) !== -1 
+  );
 
   return(
     <div>
