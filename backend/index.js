@@ -67,7 +67,7 @@ app.get('/api/item', (req, res) => {
 // check if a user is librarian or customer
 app.get('/api/user-type', (req, res) => {
   let librarian_query = `SELECT * from librarian, user 
-                        WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                        WHERE user.libraryCardNumber="${req.body['card-number']}" 
                         AND user.libraryCardNumber=librarian.libraryCardNumber`;
   connection.query(librarian_query, (err, row, fields) => {
     console.log(row);
@@ -81,7 +81,7 @@ app.get('/api/user-type', (req, res) => {
       );
     } else {
       let customer_query = `SELECT * from customer, user  
-                            WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                            WHERE user.libraryCardNumber="${req.body['card-number']}" 
                             AND user.libraryCardNumber=customer.libraryCardNumber`;
       connection.query(customer_query , (err, row, fields) => {
         console.log(row);
