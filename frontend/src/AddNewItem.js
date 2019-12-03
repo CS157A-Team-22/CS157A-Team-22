@@ -81,7 +81,7 @@ class AddNewItem extends Component {
 
         <Container style=
           {{ 
-              padding: '8%', 
+              padding: '4%', 
               marginTop: '150px',
               backgroundColor: '#fffae3',
               minHeight: '50vh'
@@ -90,37 +90,62 @@ class AddNewItem extends Component {
           <p style={{textAlign: 'center', marginTop: '10px'}}> Please enter information for the new item below. </p>
           <form onSubmit={this.handleSubmit} method="post">
             <FormGroup>
-              <FormControl>
-                <InputLabel htmlFor="callNumber">Call Number</InputLabel>
-                <Input
-                  type="callNumber" 
-                  id="callNumber" 
-                  name="callNumber" 
-                  value={this.state.callNumber}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControlLabel
-                control={<Checkbox checked={this.state.donated} 
-                                   onClick={this.handleDonatedCheckbox} 
-                                   value="donated" />}
-                name="donated"
-                label="donated"
-              />
-              {this.state.donated ? "" : 
-                <FormControl>
-                  <InputLabel htmlFor="purchasePrice">Purchase Price</InputLabel>
+
+                <FormGroup row="true">
+                <FormControl style={{padding: '10px'}}>
+                  <InputLabel htmlFor="callNumber">Call Number</InputLabel>
                   <Input
-                    type="purchasePrice" 
-                    id="purchasePrice" 
-                    name="purchasePrice" 
-                    value={this.state.purchasePrice}
+                    type="callNumber" 
+                    id="callNumber" 
+                    name="callNumber" 
+                    value={this.state.callNumber}
                     onChange={this.handleChange}
                     required
                   />
                 </FormControl>
-              }
+                <FormControlLabel
+                  control={<Checkbox checked={this.state.donated} 
+                                     onClick={this.handleDonatedCheckbox} 
+                                     value="donated" />}
+                  name="donated"
+                  label="donated"
+                />
+                {this.state.donated ? "" : 
+                  <FormControl style={{padding: '10px'}} >
+                    <InputLabel htmlFor="purchasePrice">Purchase Price</InputLabel>
+                    <Input
+                      type="purchasePrice" 
+                      id="purchasePrice" 
+                      name="purchasePrice" 
+                      value={this.state.purchasePrice}
+                      onChange={this.handleChange}
+                      required
+                    />
+                  </FormControl>
+                }
+                <FormControl style={{padding: '10px'}} >
+                <InputLabel htmlFor="loanPeriod">Loan Period</InputLabel>
+                <Input
+                  type="loanPeriod" 
+                  id="loanPeriod" 
+                  name="loanPeriod" 
+                  value={this.state.loanPeriod}
+                  onChange={this.handleChange}
+                  required
+                />
+              </FormControl>
+              <FormControl style={{padding: '10px'}}>
+                <InputLabel htmlFor="lateFee">Late Fee</InputLabel>
+                <Input
+                  type="lateFee" 
+                  id="lateFee" 
+                  name="lateFee" 
+                  value={this.state.lateFee}
+                  onChange={this.handleChange}
+                  required
+                />
+              </FormControl>
+              </FormGroup>
               <FormControl>
                 <InputLabel htmlFor="genre">Genre</InputLabel>
                 <Input
@@ -154,29 +179,8 @@ class AddNewItem extends Component {
                   required
                 />
               </FormControl>
-              <FormControl>
-                <InputLabel htmlFor="loanPeriod">Loan Period</InputLabel>
-                <Input
-                  type="loanPeriod" 
-                  id="loanPeriod" 
-                  name="loanPeriod" 
-                  value={this.state.loanPeriod}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl>
-                <InputLabel htmlFor="lateFee">Late Fee</InputLabel>
-                <Input
-                  type="lateFee" 
-                  id="lateFee" 
-                  name="lateFee" 
-                  value={this.state.lateFee}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
-              <RadioGroup defaultValue="" label="Item Type" name="ItemType">
+             
+              <RadioGroup defaultValue="" label="Item Type" row="true" name="ItemType">
                 <FormControlLabel value="book" 
                                   control={<Radio onClick={this.handleRadio}/>} 
                                   label="book" />
