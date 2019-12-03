@@ -45,6 +45,7 @@ class LandingPage extends React.Component {
 
     return (
       <div>
+
           <SearchBar 
             searchText={this.state.searchText} 
             onChange={this.handleSearchTextChange}

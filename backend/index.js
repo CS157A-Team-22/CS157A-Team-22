@@ -76,7 +76,7 @@ app.get('/api/user-type', (req, res) => {
       return res.status(200).json(
         {
           'type': 'librarian', 
-          'options': ['Check In', 'Check out', 'Add New Item', 'Generate Report']
+          'options': ['Check In', 'Check out', 'Add New Item', 'Remove Item', 'Generate Report']
         }
       );
     } else {
@@ -215,10 +215,13 @@ app.get("/api/wish-list", (req, res) => {
                                                 FROM user 
                                                 WHERE email="${userInfo['email']}")`; 
   connection.query(sql_query, (err, row, fields) => {
+    console.log("begin query")
     console.log(row);
     if (Object.keys(row).length != 0) {
+      console.log("row returned")
       return res.status(200).json(row);
     }
+    console.log("Row NOT returned")
     return res.status(502).json({error: 'No items in wishlist'});
   });
 })
@@ -321,8 +324,6 @@ insertToHolds = (req, res) => {
     // add to hold table with fetched dueDate attribute
     connection.query(sql_query, (err, row, fields) => {    
       if (Object.keys(row).length != 0) {
-        let update_query = `UPDATE item SET status='on hold' WHERE callNumber="${req.body['call-number']}"`;
-        connection.query(update_query, (err, row, fileds) => console.log(row));
         return res.status(200).json(row);
       }
       return res.status(502).json({error: 'No items posted to hold'});
@@ -402,14 +403,211 @@ getNewDate = (item) => {
   return dueDate.getUTCFullYear() + '-' + `${dueDate.getMonth() + 1}` + '-' + dueDate.getUTCDate();
 }
 
-// add an item to the system
-//TODO: need to finish + test
-app.post('/add-item', (req, res) => {
-  let newItem = req.body
 
-  console.log('---add-item not implemented---\n')
-  // connection.query('INSERT INTO item ' + ' VALUE()')
+
+
+
+
+
+//TODO: Update item status, validate that item is not checked out to another user. 
+app.post('/api/check-out', (req, res) => {
+  let CN = req.body['callNumber'];
+  let LCN = req.body['libraryCardNumber'];
+  let getItem = `SELECT * FROM item WHERE callNumber = "${CN}";`;
+  let holdCheck = `SELECT * FROM hold WHERE callNumber ="${CN}" AND NOT libraryCardNumber ="${LCN}";`;
+
+  connection.query(getItem, (err, rows, fields) => {
+    if(rows.length === 1) {
+      let item = rows[0]
+      if(item.status === "checked out") {
+        return res.status(200).send("That item is not available to be checked out.");
+      } else {
+        connection.query(holdCheck, (err, rows, fields) => {
+          console.log("HOLD CHECK ROWS: ", rows.length)
+          if(rows.length > 0) {
+            return res.status(200).send("HOLD CHECK: That item is not available to be checked out.");
+          } else {
+            return checkOutItem(item, CN, LCN, res);    
+          }
+        })
+      }
+    }
+  })
 })
+
+
+
+
+checkOutItem = (item, CN, LCN, res) => {
+  let updateItem = `UPDATE item SET status = "checked out" WHERE callNumber = "${CN}";`;
+  let borrow = `INSERT INTO borrows (borrowDate, dueDate, overdue, returnDate, numberRenewals, callNumber, libraryCardNumber)
+                    VALUES (NOW(), DATE_ADD(NOW(), INTERVAL ${item.loanPeriod} DAY), 0, NULL, 0, ${CN}, ${LCN});`;
+  console.log(item)
+  console.log(updateItem)
+  console.log(borrow)
+
+  connection.query(borrow, (err, rows, fields) => {
+    if(rows.affectedRows === 1) {
+      connection.query(updateItem, (err, rows, fields) => {
+        if(rows.affectedRows === 1) {
+          return res.status(200).send(`User ${LCN} has borrowed ${CN}`);
+        }
+      })
+    }              
+  })
+}
+  
+
+
+
+
+
+app.post('/api/check-in', (req, res) => {
+  let isCheckedOut = `SELECT * FROM borrows 
+               WHERE callNumber = "${req.body['CallNumber']}" 
+               AND returnDate IS NULL;`;
+  connection.query(isCheckedOut, (err, rows, fields) => {
+    if (rows.length !== 0) {
+      console.log(rows.length)
+      console.log(rows[0].libraryCardNumber);
+      let CN = req.body['CallNumber'];
+      let LCN = rows[0].libraryCardNumber;
+      let holdCheck = `SELECT * 
+                       FROM hold 
+                       WHERE callNumber ="${CN}" AND NOT libraryCardNumber ="${LCN}";`;
+      connection.query(holdCheck, (err, rows, fields) => {
+        if(rows.length > 0) {
+          return checkInItem(res, CN, LCN, "on hold");
+        } else {
+          return checkInItem(res, CN, LCN, "available");
+        }
+      })                 
+    } else {
+      return res.status(200).send("That item is not currently checked out");
+    }
+  })
+})
+
+
+//TODO: Update Item Status, add applicable late fee to user account from the return
+checkInItem = (res, CN, LCN, newStatus) => {
+  let updateBorrows = `UPDATE borrows SET returnDate = NOW()
+                       WHERE callNumber = "${CN}"
+                       AND libraryCardNumber = "${LCN}";`;
+
+
+  let updateItem = `UPDATE item SET status = "${newStatus}" WHERE callNumber = "${CN}";`;
+
+  console.log(updateBorrows)
+  console.log(updateItem)
+
+  connection.query(updateBorrows, (err, rows, fields) => {
+    console.log(rows)
+    if(rows.changedRows === 1) {
+      console.log("BORROWS UPDATED")
+      connection.query(updateItem, (err, rows, fields) => {
+        if(rows.changedRows === 1) {
+          console.log("ITEM UPDATED")
+          return res.status(200).send(`Item ${CN}s has been checked in.`)
+        }
+      })
+    } else {
+    return res.status(500).send('There was a problem checking in this item'); 
+  }
+  })
+}
+
+
+
+
+
+
+
+
+// add an item to the system
+app.post('/api/add-item', (req, res) => {
+  let item = req.body
+  let price = item.donated ? "0.00" : item.purchasePrice;
+  console.log(price);
+  let addItem = `INSERT INTO item VALUES 
+                ("${item.callNumber}", "${price}", ${item.donated}, 
+                 "${item.type}", "available", "${item.genre}", 
+                 "${item.name}", "${item.releaseDate}", "${item.loanPeriod}", 
+                 "${item.lateFee}");`;
+  
+
+  console.log(addItem)
+  connection.query(`SELECT * FROM item WHERE callNumber = "${item.callNumber}";`, (err, rows, fields) => {
+    if(rows.length === 0) {
+
+      connection.query(addItem, (err, rows, fields) => {
+        console.log(rows)
+        if(rows.affectedRows === 1) {
+          
+          if(item.type === "book") {
+            connection.query(`INSERT INTO book VALUES 
+              ("${item.callNumber}", "${item.author}");`, (err, rows, fields) => {
+                return res.status(200).send("New Item successfully added");
+              })
+          } else if (item.type === "movie") {
+            connection.query(`INSERT INTO book VALUES 
+              ("${item.callNumber}", "${item.actor}", "${item.director}");`, (err, rows, fields) => {
+                return res.status(200).send("New Item successfully added");               
+              })
+          } else {
+            console.log("¯\_(ツ)_/¯")
+          }
+
+        }
+      })
+    } else {
+      return res.status(200).send("Unable to add item");
+    }
+  })
+})
+
+
+
+
+app.post('/api/remove-item', (req, res) => {
+  console.log(req.body)
+  let checkIfLoaned = `SELECT * FROM item WHERE callNumber = "${req.body.CallNumber}";`;
+
+  //VALIDATE ITEM NOT CHECKED OUT
+  connection.query(checkIfLoaned, (err, row, fields) => {
+    if(row[0] === undefined) {
+      return res.status(200).send("This item does not exist.")
+    }
+    let item = row[0];
+    console.log("ITEM IS: ", item)
+
+    if(item.status !== "checked out") {
+
+      connection.query(`DELETE FROM borrows WHERE callNumber = "${item.callNumber}";`, (err, row, fields) => {
+        if (err) {console.log(err)}
+      })
+      connection.query(`DELETE FROM hold WHERE callNumber = "${item.callNumber}";`, (err, row, fields) => {
+        if (err) {console.log(err)}
+      })
+      connection.query(`DELETE FROM wishlist WHERE callNumber = "${item.callNumber}";`, (err, row, fields) => {
+        if (err) {console.log(err)}
+      })
+      connection.query(`DELETE FROM ${item.type} WHERE callNumber = "${item.callNumber}";`, (err, row, fields) => {
+        if (err) {console.log(err)}
+      })
+      connection.query(`DELETE FROM item WHERE callNumber = "${item.callNumber}";`, (err, row, fields) => {
+        if (err) {console.log(err)}
+      })
+
+      return res.status(200).send("Item successfully removed from inventory.");
+    } else {
+      return res.status(200).send("An item can not be removed if it is currenyly checked out.");
+    }
+  }) 
+
+  
+})
+
 
 // add a new user
 app.post('/api/submit-new-user', (req, res) => {

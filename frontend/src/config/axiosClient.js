@@ -50,8 +50,24 @@ export default {
         addToHold(body) {
             return axiosClient.post('/holds', body);
         },
+
+        checkIn(body) {
+            return axiosClient.post('/check-in', body);
+        },
+        checkOut(body) {
+            return axiosClient.post('/check-out', body);
+        },
+        addItem(body) {
+            console.log(body)
+            return axiosClient.post('/add-item', body);
+        },
         renewItem(body) {
             return axiosClient.post('/checked-out', body);
+
+        },
+        removeItem(body) {
+            return axiosClient.post('/remove-item', body);
         }
     }
+
 }

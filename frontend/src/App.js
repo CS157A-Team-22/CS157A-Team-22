@@ -6,8 +6,13 @@ import ReadingHistory from './readingHistory/ReadingHistory';
 import Navigation from './Navigation';
 import Holds from './Holds';
 import ItemPage from './items/ItemPage';
+import CheckIn from './CheckIn'
+import CheckOut from './CheckOut'
+import AddNewItem from './AddNewItem'
 import CheckedOut from './CheckedOut';
 import Fees from './Fees';
+import RemoveItem from './RemoveItem';
+
 
 import {
   BrowserRouter as Router,
@@ -128,6 +133,18 @@ class App extends React.Component {
                 <Navigation authUser={authUser}>
                   <Fees authUser={authUser}/>
                 </Navigation>
+              </Route>
+              <Route path="/check-in">
+                <Navigation><CheckIn/></Navigation>
+              </Route>
+              <Route path="/check-out">
+                <Navigation><CheckOut/></Navigation>
+              </Route>
+              <Route path="/add-new-item">
+                <Navigation><AddNewItem/></Navigation>
+              </Route>
+              <Route path="/remove-item">
+                <Navigation><RemoveItem/></Navigation>
               </Route>
             </Switch>
         </Router>
