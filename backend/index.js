@@ -502,6 +502,7 @@ checkOutItem = (item, CN, LCN, res) => {
     if(rows.affectedRows === 1) {
       connection.query(updateItem, (err, rows, fields) => {
         if(rows.affectedRows === 1) {
+          connection.query(`DELETE FROM hold WHERE libraryCardNumber="${LCN}" AND callNumber="${CN}"`);
           return res.status(200).send(`User ${LCN} has borrowed ${CN}`);
         }
       })
