@@ -85,7 +85,15 @@ app.get('/search-all/:name', (req, res) => {
 
 // search all items by cal number with call number parameter from url
 app.get('/search-all/:callNo', (req, res) => {
-  connection.query(SELECT_ALL_QRY+ ' item WHERE author='+req.params.callNo, (err, row, fields) => {
+  connection.query(SELECT_ALL_QRY+ ' item WHERE callNumber='+req.params.callNo, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all items by genre with parameter from url
+app.get('/search-all/:genre', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' item WHERE genre='+req.params.callNo, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
   })
@@ -93,7 +101,7 @@ app.get('/search-all/:callNo', (req, res) => {
 
 // search all movies by director with director parameter from url
 app.get('/search-all-movies/:director', (req, res) => {
-  connection.query(SELECT_ALL_QRY+ ' movie WHERE director='+req.params.director, (err, row, fields) => {
+  connection.query(SELECT_ALL_QRY+ ' item JOIN movie ON item.callNumber = movie.callNumber WHERE director='+req.params.director, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
   })
@@ -101,15 +109,15 @@ app.get('/search-all-movies/:director', (req, res) => {
 
 // search all movies by actor with actor parameter from url
 app.get('/search-all-movies/:actor', (req, res) => {
-  connection.query(SELECT_ALL_QRY+ ' movie WHERE actor='+req.params.director, (err, row, fields) => {
+  connection.query(SELECT_ALL_QRY+ ' item JOIN movie ON item.callNumber = movie.callNumber WHERE actor='+req.params.director, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
   })
 })
 
 // search all books by author with author parameter from url
-app.get('/search-all-movies/:author', (req, res) => {
-  connection.query(SELECT_ALL_QRY+ ' book WHERE author='+req.params.director, (err, row, fields) => {
+app.get('/search-all-books/:author', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' item JOIN book ON item.callNumber = book.callNumber WHERE author='+req.params.director, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
   })
