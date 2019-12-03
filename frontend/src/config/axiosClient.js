@@ -32,6 +32,9 @@ export default {
         getUserInfo(body) {
             return axiosClient.get('/user-info', body);
         },
+        getUserType(body) {
+            return axiosClient.get('/user-type', body);
+        },
         getCheckedOut(body) {
             return axiosClient.get('/checked-out', body);
         },

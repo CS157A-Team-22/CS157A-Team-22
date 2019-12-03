@@ -22,6 +22,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HomeIcon from '@material-ui/icons/Home';
 import Button from '@material-ui/core/Button';
 
+import axiosClient from './config/axiosClient';
+
 const materialCss = styles;
 
 class Navigation extends Component {
@@ -29,8 +31,31 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.state= {
-            open: false
+            open: false, 
+            options: []
         };
+    }
+
+    componentDidMount() {
+        if (this.props.authUser) {
+            this.getUserType();
+        } else {
+            this.props.history.push('/');
+        }
+    }
+
+    getUserType = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserType({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.setState({ options: res.data.options });
+        })
+        .catch(err => {
+            console.log("Error in getting user type: ", err);
+        }) 
     }
 
     handleDrawerClose = () => {
@@ -61,6 +86,7 @@ class Navigation extends Component {
 
     render() { 
         const { classes, theme } = this.props;
+        const { options } = this.state;
         return ( 
             <>
                 <AppBar 
@@ -110,7 +136,7 @@ class Navigation extends Component {
                     </div>
                     <Divider />
                     <List>
-                        {['Checked out', 'Wish list', 'Reading history', 'Holds'].map((text, index) => (
+                        {options.map((text, index) => (
                         <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
                             <ListItemText primary={text} />
                         </ListItem>
@@ -118,11 +144,6 @@ class Navigation extends Component {
                     </List>
                     <Divider />
                     <List>
-                        {['Fees'].map((text, index) => (
-                        <ListItem button key={text} onClick={() => this.handleListItemClick(text)}>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                        ))}
                         <ListItem>
                             <Button 
                                 type="submit" 

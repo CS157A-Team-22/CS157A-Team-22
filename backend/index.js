@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
 
 const SELECT_ALL_QRY = 'SELECT * FROM '
-const ITEM_DB = 'item(callNumber, purchasePrice, donated, type, status, genre, name, releaseDate, loanPeriod, lateFee'
 
 
 // GET requests
@@ -65,6 +64,43 @@ app.get('/api/item', (req, res) => {
   });
 });
 
+// check if a user is librarian or customer
+app.get('/api/user-type', (req, res) => {
+  let librarian_query = `SELECT * from librarian, user 
+                        WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                        AND user.libraryCardNumber=librarian.libraryCardNumber`;
+  connection.query(librarian_query, (err, row, fields) => {
+    console.log(row);
+    // if there are items in the row array 
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json(
+        {
+          'type': 'librarian', 
+          'options': ['Check In', 'Check out', 'Add New Item', 'Generate Report']
+        }
+      );
+    } else {
+      let customer_query = `SELECT * from customer, user  
+                            WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                            AND user.libraryCardNumber=customer.libraryCardNumber`;
+      connection.query(customer_query , (err, row, fields) => {
+        console.log(row);
+        // if there are items in the row array 
+        if (row !== undefined && Object.keys(row).length != 0) {
+          return res.status(200).json(
+            {
+              'type': 'customer', 
+              'options': ['Checked out', 'Wish list', 'Reading history', 'Holds', 'Fees']
+            }
+          );
+        } else {
+          return res.status(502).json({error: 'Cannot find user'});
+        }
+      });
+    }  
+  });
+})
+
 // react test
 app.get('/react-test', (req, res) => res.send('Hi React, I\'m express.'))
 
@@ -84,9 +120,69 @@ app.get('/search-all/:name', (req, res) => {
   })
 })
 
+// search all items by cal number with call number parameter from url
+app.get('/search-all/:callNo', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' item WHERE author='+req.params.callNo, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all movies by director with director parameter from url
+app.get('/search-all-movies/:director', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' movie WHERE director='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all movies by actor with actor parameter from url
+app.get('/search-all-movies/:actor', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' movie WHERE actor='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
+// search all books by author with author parameter from url
+app.get('/search-all-movies/:author', (req, res) => {
+  connection.query(SELECT_ALL_QRY+ ' book WHERE author='+req.params.director, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+})
+
 // remove item by call number from library
 //TODO: test this
 app.get('/remove-item/:callNum', (req, res) => {
+
+  // delete from tables with callNum as foreign key first
+  connection.query('DELETE FROM movie WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM book WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM borrows WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM hold WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  connection.query('DELETE FROM wishlist WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
+    if (err) {console.log(err)}
+    res.send(row)
+  })
+
+  // finally delete from item
   connection.query('DELETE FROM item WHERE callNumber='+ req.params.callNum, (err, row, fields) => {
     if (err) {console.log(err)}
     res.send(row)
@@ -94,6 +190,9 @@ app.get('/remove-item/:callNum', (req, res) => {
 })
 
 app.get("/api/user-info", (req, res) => {
+  if (!req.query['authUser']) {
+    return res.status(502).json({error: 'No session'});
+  }
   let authUser = JSON.parse(req.query['authUser']);
 
   let sql_query = `SELECT * FROM user
@@ -108,9 +207,10 @@ app.get("/api/user-info", (req, res) => {
   });
 });
 
-// TODO: confirm PK of wishlist, currently not listed in MySQL
 app.get("/api/wish-list", (req, res) => {
-
+  if (!req.query['authUser']) {
+    return res.status(502).json({error: 'No session'});
+  }
   // get card number of given authUser
   let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
@@ -129,6 +229,9 @@ app.get("/api/wish-list", (req, res) => {
 })
 
 app.get("/api/holds", (req, res) => {
+  if (!req.query['authUser']) {
+    return res.status(502).json({error: 'No session'});
+  }
   let userInfo = JSON.parse(req.query['userInfo']);
 
   let sql_query = `SELECT Item.name, holdDate
@@ -162,6 +265,9 @@ app.get("/api/checked-out", (req, res) => {
 
 // returns overdue items for frontend to calculate specific fees
 app.get("/api/fees", (req, res) => {
+  if (!req.query['authUser']) {
+    return res.status(502).json({error: 'No session'});
+  }
   let userInfo = JSON.parse(req.query['userInfo']);
 
   // lateFee from item, overdue from borrows, libraryCardNumber from borrows
@@ -180,6 +286,9 @@ app.get("/api/fees", (req, res) => {
 })
 
 app.get("/api/reading-history", (req, res) => {
+  if (!req.query['authUser']) {
+    return res.status(502).json({error: 'No session'});
+  }
   let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT Item.name, borrowDate, returnDate, numberRenewals, overdue 
                   FROM item Item, borrows WHERE libraryCardNumber="${userInfo['libraryCardNumber']}" 
@@ -313,7 +422,7 @@ app.post('/add-item', (req, res) => {
   let newItem = req.body
 
   console.log('---add-item not implemented---\n')
-  // connection.query('INSERT INTO' + ITEM_DB + ' VALUE()')
+  // connection.query('INSERT INTO item ' + ' VALUE()')
 })
 
 // add a new user
