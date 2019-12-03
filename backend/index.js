@@ -64,6 +64,33 @@ app.get('/api/item', (req, res) => {
   });
 });
 
+// check if a user is librarian or customer
+app.get('/api/user-type', (req, res) => {
+  let librarian_query = `SELECT * from librarian, user 
+                        WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                        AND user.libraryCardNumber=librarian.libraryCardNumber`;
+  connection.query(librarian_query, (err, row, fields) => {
+    console.log(row);
+    // if there are items in the row array 
+    if (row !== undefined && Object.keys(row).length != 0) {
+      return res.status(200).json({'type': 'librarian'});
+    } else {
+      let customer_query = `SELECT * from customer, user  
+                            WHERE user.libraryCardNumber="${req.query['card-number']}" 
+                            AND user.libraryCardNumber=customer.libraryCardNumber`;
+      connection.query(customer_query , (err, row, fields) => {
+        console.log(row);
+        // if there are items in the row array 
+        if (row !== undefined && Object.keys(row).length != 0) {
+          return res.status(200).json({'type': 'customer'});
+        } else {
+          return res.status(502).json({error: 'Cannot find user'});
+        }
+      });
+    }  
+  });
+})
+
 // react test
 app.get('/react-test', (req, res) => res.send('Hi React, I\'m express.'))
 
