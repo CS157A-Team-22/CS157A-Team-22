@@ -38,16 +38,16 @@ class Navigation extends Component {
 
     componentDidMount() {
         if (this.props.authUser) {
-            this.getUserType();
+            this.getUserInfo();
         } else {
             this.props.history.push('/');
         }
     }
 
-    getUserType = () => {
+    getUserType = (userInfo) => {
         let { authUser } = this.props;
         axiosClient.fetch.getUserType({
-            params: { authUser }
+            'card-number': userInfo.libraryCardNumber
         })
         .then(res => {
             console.log(res);
@@ -56,6 +56,20 @@ class Navigation extends Component {
         .catch(err => {
             console.log("Error in getting user type: ", err);
         }) 
+    }
+
+    getUserInfo = () => {
+        let { authUser } = this.props;
+        axiosClient.fetch.getUserInfo({
+            params: { authUser }
+        })
+        .then(res => {
+            console.log(res);
+            this.getUserType(res.data[0]);
+        })
+        .catch(err => {
+            console.log("Error in getting user info: ", err);
+        })
     }
 
     handleDrawerClose = () => {
