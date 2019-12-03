@@ -48,19 +48,13 @@ class AddNewItem extends Component {
   }
 
 
-  handleDonatedCheckbox = () => {
-    let newVal = !this.state.donated
+  handleCheckbox = () => {
+    let newVal = !this.state.librarian
     this.setState({
       donated: newVal
     })
   }
 
-  handleRadio = e => {
-    console.log(e.target.value)
-    this.setState({
-      type: e.target.value
-    })
-  }
 
   render() {
     const { classes, theme } = this.props;
@@ -95,87 +89,58 @@ class AddNewItem extends Component {
              
               {this.state.donated ? "" : 
                 <FormControl>
-                  <InputLabel htmlFor="PurchasePrice">Purchase Price</InputLabel>
+                  <InputLabel htmlFor="firstName">First Name</InputLabel>
                   <Input
-                    type="PurchasePrice" 
-                    id="PurchasePrice" 
-                    name="PurchasePrice" 
-                    value={this.state.purchasePrice}
+                    type="firstName" 
+                    id="firstName" 
+                    name="firstName" 
+                    value={this.state.firstName}
                     onChange={this.handleChange}
                     required
                   />
                 </FormControl>
               }
               <FormControl>
-                <InputLabel htmlFor="Genre">Genre</InputLabel>
+                <InputLabel htmlFor="lastName">Last Name</InputLabel>
                 <Input
-                  type="Genre" 
-                  id="Genre" 
-                  name="Genre" 
-                  value={this.state.genre}
+                  type="lastName" 
+                  id="lastName" 
+                  name="lastName" 
+                  value={this.state.lastName}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="Name">Name</InputLabel>
+                <InputLabel htmlFor="email">Email</InputLabel>
                 <Input
-                  type="Name" 
-                  id="Name" 
-                  name="Name" 
-                  value={this.state.name}
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  value={this.state.email}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="ReleaseDate">Release Date</InputLabel>
+                <InputLabel htmlFor="password">Password</InputLabel>
                 <Input
-                  type="ReleaseDate" 
-                  id="ReleaseDate" 
-                  name="ReleaseDate" 
-                  value={this.state.releaseDate}
+                  type="password" 
+                  id="password" 
+                  name="password" 
+                  value={this.state.password}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
-              <FormControl>
-                <InputLabel htmlFor="LoanPeriod">Loan Period</InputLabel>
-                <Input
-                  type="LoanPeriod" 
-                  id="LoanPeriod" 
-                  name="LoanPeriod" 
-                  value={this.state.loanPeriod}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl>
-                <InputLabel htmlFor="LateFee">Late Fee</InputLabel>
-                <Input
-                  type="LateFee" 
-                  id="LateFee" 
-                  name="LateFee" 
-                  value={this.state.lateFee}
-                  onChange={this.handleChange}
-                  required
-                />
-              </FormControl>
-              <RadioGroup defaultValue="" label="Item Type" name="ItemType">
-                <FormControlLabel value="Book" 
-                                  control={<Radio onClick={this.handleRadio}/>} 
-                                  label="Book" />
-                <FormControlLabel value="Movie" 
-                                  control={<Radio onClick={this.handleRadio}/>} 
-                                  label="Movie" />
-              </RadioGroup>
+              
 
               <FormControlLabel
-                control={<Checkbox checked={this.state.donated} 
-                                   onClick={this.handleDonatedCheckbox} 
-                                   value="Donated" />}
-                name="Donated"
-                label="Donated"
+                control={<Checkbox checked={this.state.librarian} 
+                                   onClick={this.handleCheckbox} 
+                                   value="librarian" />}
+                name="librarian"
+                label="librarian"
               />
               <FormControl>
                 <Button 
