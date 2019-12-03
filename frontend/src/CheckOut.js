@@ -21,21 +21,21 @@ class CheckOut extends Component {
     }
   }
 
+
+
   handleSubmit = e => {
     e.preventDefault();
     let { callNumber, libraryCardNumber } = this.state;
-    axiosClient.update.checkOut({
-      callNumber,
-      libraryCardNumber
-    }).then( res => {
-     console.log("login response", res);
-      alert("Checked out " + callNumber + "to " + libraryCardNumber);
+    axiosClient.update.checkOut( 
+      { callNumber, libraryCardNumber }).then( res => {
+      alert(res.data);
       this.props.history.push('/check-out');
     }).catch(err => {
       console.log("check out error", err);
     })
-    console.log("form submitted!");
   }
+
+
 
   handleChange = e => {
     this.setState({

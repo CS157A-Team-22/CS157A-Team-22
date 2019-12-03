@@ -20,18 +20,20 @@ class CheckIn extends Component {
     }
   }
 
+
+
   handleSubmit = e => {
     e.preventDefault();
     let { CallNumber } = this.state;
-    axiosClient.update.checkIn({CallNumber}).then( res => {
-      console.log("test response", res);
-    alert(`Checked in ${CallNumber}`);
+    axiosClient.update.checkIn({CallNumber}).then( res => {      
+    alert(res.data);
       this.props.history.push('/check-in');
     }).catch(err => {
       console.log("CheckIn error", err);
     })
-    console.log("form submitted!");
   }
+
+
 
   handleChange = e => {
     this.setState({

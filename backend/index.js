@@ -202,25 +202,40 @@ insertToWishList = (req, res) => {
 app.post('/api/check-out', (req, res) => {
   let CN = req.body['callNumber'];
   let LCN = req.body['libraryCardNumber'];
-  console.log(CN + " " + LCN);
-  let getItem = `SELECT * FROM item
-                 WHERE callNumber = "${CN}";`;
+  let getItem = `SELECT * FROM item WHERE callNumber = "${CN}";`;
   let item
   connection.query(getItem, (err, rows, fields) => {
     if(rows.length === 1) {
       item = rows[0];
-      let borrow = `INSERT INTO borrows (borrowDate, dueDate, overdue, returnDate, numberRenewals, callNumber, libraryCardNumber)
-                    VALUES (NOW(), DATE_ADD(NOW(), INTERVAL ${item.loanPeriod} DAY), 0, NULL, 0, ${CN}, ${LCN});`;
-      console.log(borrow);
-      connection.query(borrow, (err, rows, fields) => {
-        if(rows.affectedRows === 1) {
-          return res.status(200).json(`User ${LCN} has borrowed ${CN}`)
-        }
-      })
+      //console.log(borrow);
+      console.log(item.status);
+      if(item.status === "loaned") {
+        res.status(200).send("That item is not available to be checked out.");
+      } else {
+        return checkOutItem(item, CN, LCN, res);
+      }
     }
   })
-  //return res.status(200).json("So Far, So Good");
 })
+
+
+
+
+checkOutItem = (item, CN, LCN, res) => {
+  let updateItem = `UPDATE item SET status = "loaned" WHERE callNumber = "${CN}";`;
+  let borrow = `INSERT INTO borrows (borrowDate, dueDate, overdue, returnDate, numberRenewals, callNumber, libraryCardNumber)
+                    VALUES (NOW(), DATE_ADD(NOW(), INTERVAL ${item.loanPeriod} DAY), 0, NULL, 0, ${CN}, ${LCN});`;
+
+  connection.query(borrow, (err, rows, fields) => {
+    if(rows.affectedRows === 1) {
+      connection.query(updateItem, (err, rows, fields) => {
+        if(rows.affectedRows === 1) {
+          return res.status(200).send(`User ${LCN} has borrowed ${CN}`);
+        }
+      })
+    }              
+  })
+}
 
 
 
@@ -230,29 +245,34 @@ app.post('/api/check-in', (req, res) => {
   let isCheckedOut = `SELECT * FROM borrows 
                WHERE callNumber = "${req.body['CallNumber']}" 
                AND returnDate IS NULL;`;
-  //console.log(isCheckedOut)
   connection.query(isCheckedOut, (err, rows, fields) => {
-    //console.log(row);
     if (rows.length !== 0) {
       console.log(rows.length)
       console.log(rows[0].libraryCardNumber);
-      return res.status(200).json(checkInItem(rows, req, res));
+      return checkInItem(rows, req, res);
     }
-    return res.status(502).json({error: 'That item is not currently checked out'});
+    return res.status(200).send("That item is not currently checked out");
   })
 })
 
 
 //TODO: Update Item Status, add applicable late fee to user account from the return
 checkInItem = (row, req, res) => {
-  let updateBorrows = `UPDATE borrows
-                       SET returnDate = NOW()
+  let updateBorrows = `UPDATE borrows SET returnDate = NOW()
                        WHERE callNumber = "${req.body['CallNumber']}"
                        AND libraryCardNumber = "${row[0].libraryCardNumber}";`;
+  let updateItem = `UPDATE item SET status = "available" WHERE callNumber = "${req.body['CallNumber']}";`;
+
   connection.query(updateBorrows, (err, rows, fields) => {
-    console.log(`Changed ${rows.changedRows} rows.`);
+    if(rows.affectedRows === 1) {
+      connection.query(updateItem, (err, rows, fields) => {
+        if(rows.affectedRows === 1) {
+          return res.status(200).send(`Item ${req.body['CallNumber']} has been checked in.`)
+        }
+      })
+    }
+    return res.status(500).send('There was a problem checking in this item'); 
   })
-  return `Checked in ${req.body['CallNumber']}`;
 }
 
 
