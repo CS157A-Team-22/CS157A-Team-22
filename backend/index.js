@@ -530,30 +530,36 @@ checkInItem = (res, CN, LCN, newStatus) => {
 //TODO: need to finish + test
 app.post('/api/add-item', (req, res) => {
   let item = req.body
-  console.log(item)
   let addItem = `INSERT INTO item VALUES 
                 ("${item.callNumber}", "${item.purchasePrice}", ${item.donated}, 
                  "${item.type}", "available", "${item.genre}", 
                  "${item.name}", "${item.releaseDate}", "${item.loanPeriod}", 
                  "${item.lateFee}");`;
-  console.log(addItem)
-  connection.query(addItem, (err, rows, fields) => {
-    console.log(rows)
-    console.log(err)
-    if(rows.affectedRows === 1) {
-      if(item.type === "book") {
-        connection.query(`INSERT INTO book VALUES 
-          ("${item.callNumber}", "${item.author}");`, (err, rows, fields) => {
-            return res.status(200).send("New Item successfully added");
-          })
-      } else if (item.type === "movie") {
-        connection.query(`INSERT INTO book VALUES 
-          ("${item.callNumber}", "${item.actor}", "${item.director}");`, (err, rows, fields) => {
-            return res.status(200).send("New Item successfully added");               
-          })
-      } else {
-        console.log("¯\_(ツ)_/¯")
-      }
+  
+  connection.query(`SELECT * FROM item WHERE callNumber = "${item.callNumber}";`, (err, rows, fields) => {
+    if(rows.length === 0) {
+
+      connection.query(addItem, (err, rows, fields) => {
+        if(rows.affectedRows === 1) {
+          
+          if(item.type === "book") {
+            connection.query(`INSERT INTO book VALUES 
+              ("${item.callNumber}", "${item.author}");`, (err, rows, fields) => {
+                return res.status(200).send("New Item successfully added");
+              })
+          } else if (item.type === "movie") {
+            connection.query(`INSERT INTO book VALUES 
+              ("${item.callNumber}", "${item.actor}", "${item.director}");`, (err, rows, fields) => {
+                return res.status(200).send("New Item successfully added");               
+              })
+          } else {
+            console.log("¯\_(ツ)_/¯")
+          }
+
+        }
+      })
+    } else {
+      return res.status(200).send("Unable to add item");
     }
   })
 })
