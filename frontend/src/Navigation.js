@@ -46,8 +46,9 @@ class Navigation extends Component {
 
     getUserType = (userInfo) => {
         let { authUser } = this.props;
+        console.log('user info', userInfo);
         axiosClient.fetch.getUserType({
-            'card-number': userInfo.libraryCardNumber
+            params: {'card-number': userInfo.libraryCardNumber}
         })
         .then(res => {
             console.log(res);
