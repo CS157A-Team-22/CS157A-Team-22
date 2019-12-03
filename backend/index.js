@@ -190,9 +190,6 @@ app.get('/remove-item/:callNum', (req, res) => {
 })
 
 app.get("/api/user-info", (req, res) => {
-  if (!req.query['authUser']) {
-    return res.status(502).json({error: 'No session'});
-  }
   let authUser = JSON.parse(req.query['authUser']);
 
   let sql_query = `SELECT * FROM user
@@ -208,9 +205,6 @@ app.get("/api/user-info", (req, res) => {
 });
 
 app.get("/api/wish-list", (req, res) => {
-  if (!req.query['authUser']) {
-    return res.status(502).json({error: 'No session'});
-  }
   // get card number of given authUser
   let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT *
@@ -229,9 +223,6 @@ app.get("/api/wish-list", (req, res) => {
 })
 
 app.get("/api/holds", (req, res) => {
-  if (!req.query['authUser']) {
-    return res.status(502).json({error: 'No session'});
-  }
   let userInfo = JSON.parse(req.query['userInfo']);
 
   let sql_query = `SELECT Item.name, holdDate
@@ -265,9 +256,6 @@ app.get("/api/checked-out", (req, res) => {
 
 // returns overdue items for frontend to calculate specific fees
 app.get("/api/fees", (req, res) => {
-  if (!req.query['authUser']) {
-    return res.status(502).json({error: 'No session'});
-  }
   let userInfo = JSON.parse(req.query['userInfo']);
 
   // lateFee from item, overdue from borrows, libraryCardNumber from borrows
@@ -286,9 +274,6 @@ app.get("/api/fees", (req, res) => {
 })
 
 app.get("/api/reading-history", (req, res) => {
-  if (!req.query['authUser']) {
-    return res.status(502).json({error: 'No session'});
-  }
   let userInfo = JSON.parse(req.query['userInfo']);
   let sql_query = `SELECT Item.name, borrowDate, returnDate, numberRenewals, overdue 
                   FROM item Item, borrows WHERE libraryCardNumber="${userInfo['libraryCardNumber']}" 
