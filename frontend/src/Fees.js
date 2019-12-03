@@ -55,6 +55,13 @@ class Fees extends Component {
             for (let i = 0; i < overdueItems.length; i++) {
                 fees += overdueItems[i].lateFee;
             }
+            axiosClient.update.insertFees({
+                'card-number': userInfo.libraryCardNumber,
+                'fees': fees
+            })
+            .catch(err => {
+                console.log("error in inserting fees", err);
+            })
             this.setState({ fees, overdueItems });
         })
         .catch(err => {

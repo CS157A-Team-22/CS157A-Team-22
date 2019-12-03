@@ -76,7 +76,7 @@ app.get('/api/user-type', (req, res) => {
       return res.status(200).json(
         {
           'type': 'librarian', 
-          'options': ['Check In', 'Check out', 'Add New Item', 'Remove Item', 'Generate Report']
+          'options': ['Check In', 'Check out', 'Add New Item', 'Remove Item', 'Generate Report', 'Checked out', 'Wish list', 'Reading history', 'Holds', 'Fees']
         }
       );
     } else {
@@ -290,6 +290,58 @@ app.get("/api/reading-history", (req, res) => {
       }
       return res.status(400).json({error: 'No items in reading history'});
     });
+})
+
+/*
+  {
+    'available': '12',
+    'checked out': '1,
+    'on hold': '3', 
+    'fines': '12'
+  }
+*/
+app.get("/api/report", (req, res) => {
+  let obj = {};
+
+  connection.query('SELECT COUNT(*) from item WHERE status="available"', (error, row, fields) => {
+    console.log(row[0]);
+    let result = row[0];
+    console.log(result['COUNT(*)']);
+    obj['available'] = result['COUNT(*)'];
+
+    connection.query('SELECT COUNT(*) from item WHERE status="checked out"', (error, row, fields) => {
+      let result = row[0];
+      obj['checked out'] = result['COUNT(*)'];
+
+      connection.query('SELECT COUNT(*) from item WHERE status="on hold"',  (error, row, fields) => {
+        let result = row[0];
+        obj['on hold'] = result['COUNT(*)'];
+
+        connection.query('SELECT * from customer WHERE fines>0',  (error, row, fields) => {
+          let result = 0;
+          row.forEach(r => {
+            result += r.fines;
+          })
+          obj['fines'] = result;
+          console.log("obj", obj);
+          return res.status(200).json(obj);
+        });
+      });
+    });
+  });
+})
+
+app.post('/api/fees', (req, res) => {
+  console.log(req.body);
+  let sql_query = `UPDATE customer SET fines="${req.body['fees']}" 
+                    WHERE libraryCardNumber="${req.body['card-number']}" `;
+  connection.query(sql_query, (err, row, fields) => {
+    console.log("row",row);
+    if (row !== undefined && Object.keys(row).length !== 0) {
+      return res.status(200).json(row);
+    }
+    return res.status(502).json({error: 'Cannot update fees!'});
+  });               
 })
 
 // POST requests

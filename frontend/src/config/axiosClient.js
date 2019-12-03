@@ -41,6 +41,9 @@ export default {
         },
         getFees(body) {
             return axiosClient.get('/fees', body);
+        }, 
+        getReport() {
+            return axiosClient.get('/report');
         }
     },
     update: {
@@ -63,7 +66,9 @@ export default {
         },
         renewItem(body) {
             return axiosClient.post('/checked-out', body);
-
+        }, 
+        insertFees(body) {
+            return axiosClient.post('/fees', body);
         },
         removeItem(body) {
             return axiosClient.post('/remove-item', body);

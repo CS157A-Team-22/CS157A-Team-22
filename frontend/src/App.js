@@ -22,6 +22,7 @@ import {
 } from "react-router-dom";
 
 import { withFirebase } from './Firebase/context';
+import GenerateReport from './GenerateReport';
 
 class App extends React.Component {
 
@@ -43,49 +44,6 @@ class App extends React.Component {
   componentWillUnmount() {
     this.listener();
   }
-  // getData() {
-  //   let url = "http://127.0.0.1:5000/react-test"
-  //   let fetchMethod = { method: 'GET', mode: 'cors'}
-
-  //   let text
-
-  //   fetch(url, fetchMethod).then(res => {
-  //     res.text().then( theText => {
-  //       console.log(theText)
-  //       text = theText
-  //       console.log("After assignment")
-  //       console.log(text)
-  //       this.setState({data: text})  
-  //     })
-  //   })
-  // }
-
-  // testFull(table) {
-  //   let url = "http://127.0.0.1:5000/full-test/" + table
-  //   let fetchMethod = { method: 'GET', mode: 'cors'}
-
-  //   fetch(url, fetchMethod).then(res => {
-  //     res.json().then( (json) => {
-  //       this.setState({rows: json})
-  //     })
-  //   })
-  // }
-
-  // displayRows() {
-  //   //console.log(this.state.rows)
-  //   return (
-  //     <table><tbody>
-  //       {this.state.rows.map( (row, index) => {
-  //         return (<tr key={index}>
-  //                   {Object.keys(row).map( (field, index) => {
-  //                     return <td key={index}>{row[field]}</td>
-  //                   })}
-  //                 </tr>
-  //                 )
-  //         })
-  //       }
-  //     </tbody></table>)
-  // }
 
   render() {
     let { authUser } = this.state;
@@ -134,6 +92,10 @@ class App extends React.Component {
                   <Fees authUser={authUser}/>
                 </Navigation>
               </Route>
+              <Route path="/generate-report">
+                <Navigation authUser={authUser}>
+                  <GenerateReport authUser={authUser}/>
+                </Navigation>
               <Route path="/check-in">
                 <Navigation><CheckIn/></Navigation>
               </Route>
@@ -145,6 +107,7 @@ class App extends React.Component {
               </Route>
               <Route path="/remove-item">
                 <Navigation><RemoveItem/></Navigation>
+
               </Route>
             </Switch>
         </Router>
