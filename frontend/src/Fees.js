@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
 import Paper from '@material-ui/core/Paper';
-
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import axiosClient from './config/axiosClient';
 import { withRouter } from 'react-router-dom';
 
@@ -11,7 +15,8 @@ class Fees extends Component {
         super(props);
         this.state = {
             userInfo: {},
-            fees: 0
+            fees: 0.0,
+            overdueItems:[]
         }
     }
 
@@ -50,7 +55,7 @@ class Fees extends Component {
             for (let i = 0; i < overdueItems.length; i++) {
                 fees += overdueItems[i].lateFee;
             }
-            this.setState({ fees });
+            this.setState({ fees, overdueItems });
         })
         .catch(err => {
             console.log("error in getting overdueItems", err);
@@ -82,7 +87,27 @@ class Fees extends Component {
                 margin: '10px auto',
                 padding: '5%'
                 }}>
-                <p>{this.state.fees}</p>
+                <p style={{textAlign:"center"}}>Total fees on account: ${this.state.fees}</p>
+                <Table aria-label="simple table">
+                    <TableHead>
+                    <TableRow>
+                        <TableCell align="left"><b>Name</b></TableCell>
+                        <TableCell align="left"><b>Due Date</b></TableCell>
+                        <TableCell align="left"><b>Late Fee</b></TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {this.state.overdueItems.map((item, index) => (
+                            <TableRow key={index}>
+                                <TableCell align="left" component="th" scope="row">
+                                    {item.name}
+                                </TableCell>
+                                <TableCell align="left">{item.dueDate.substring(0,10)}</TableCell>
+                                <TableCell align="left">${item.lateFee}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </Paper>
         );
     }
