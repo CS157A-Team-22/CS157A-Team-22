@@ -208,7 +208,11 @@ app.get("/api/user-info", (req, res) => {
 });
 
 app.get("/api/wish-list", (req, res) => {
-  if (!req.query['authUser']) {
+  console.log(req.query)
+  //console.log(req.params)
+  console.log("begin route")
+  if (!req.query['userInfo']) {
+    console.log("no session")
     return res.status(502).json({error: 'No session'});
   }
   // get card number of given authUser
@@ -220,10 +224,13 @@ app.get("/api/wish-list", (req, res) => {
                                                 FROM user 
                                                 WHERE email="${userInfo['email']}")`; 
   connection.query(sql_query, (err, row, fields) => {
+    console.log("begin query")
     console.log(row);
     if (Object.keys(row).length != 0) {
+      console.log("row returned")
       return res.status(200).json(row);
     }
+    console.log("Row NOT returned")
     return res.status(502).json({error: 'No items in wishlist'});
   });
 })
