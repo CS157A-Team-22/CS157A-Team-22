@@ -17,7 +17,7 @@ class AddNewItem extends Component {
     super(props);
     
     this.state = {
-      CallNumber: '',
+      callNumber: '',
       purchasePrice: '',
       donated: false,
       type: '', 
@@ -39,6 +39,7 @@ class AddNewItem extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    console.log(this.state);
     axiosClient.update.addItem(this.state).then( res => {      
       alert(res.data);
       this.props.history.push('/add-new-item');
@@ -90,12 +91,12 @@ class AddNewItem extends Component {
           <form onSubmit={this.handleSubmit} method="post">
             <FormGroup>
               <FormControl>
-                <InputLabel htmlFor="CallNumber">Call Number</InputLabel>
+                <InputLabel htmlFor="callNumber">Call Number</InputLabel>
                 <Input
-                  type="CallNumber" 
-                  id="CallNumber" 
-                  name="CallNumber" 
-                  value={this.state.CallNumber}
+                  type="callNumber" 
+                  id="callNumber" 
+                  name="callNumber" 
+                  value={this.state.callNumber}
                   onChange={this.handleChange}
                   required
                 />
@@ -103,17 +104,17 @@ class AddNewItem extends Component {
               <FormControlLabel
                 control={<Checkbox checked={this.state.donated} 
                                    onClick={this.handleDonatedCheckbox} 
-                                   value="Donated" />}
-                name="Donated"
-                label="Donated"
+                                   value="donated" />}
+                name="donated"
+                label="donated"
               />
               {this.state.donated ? "" : 
                 <FormControl>
-                  <InputLabel htmlFor="PurchasePrice">Purchase Price</InputLabel>
+                  <InputLabel htmlFor="purchasePrice">Purchase Price</InputLabel>
                   <Input
-                    type="PurchasePrice" 
-                    id="PurchasePrice" 
-                    name="PurchasePrice" 
+                    type="purchasePrice" 
+                    id="purchasePrice" 
+                    name="purchasePrice" 
                     value={this.state.purchasePrice}
                     onChange={this.handleChange}
                     required
@@ -121,88 +122,88 @@ class AddNewItem extends Component {
                 </FormControl>
               }
               <FormControl>
-                <InputLabel htmlFor="Genre">Genre</InputLabel>
+                <InputLabel htmlFor="genre">Genre</InputLabel>
                 <Input
-                  type="Genre" 
-                  id="Genre" 
-                  name="Genre" 
+                  type="genre" 
+                  id="genre" 
+                  name="genre" 
                   value={this.state.genre}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="Name">Name</InputLabel>
+                <InputLabel htmlFor="name">Name</InputLabel>
                 <Input
-                  type="Name" 
-                  id="Name" 
-                  name="Name" 
+                  type="name" 
+                  id="name" 
+                  name="name" 
                   value={this.state.name}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="ReleaseDate">Release Date</InputLabel>
+                <InputLabel htmlFor="releaseDate">Release Date</InputLabel>
                 <Input
-                  type="ReleaseDate" 
-                  id="ReleaseDate" 
-                  name="ReleaseDate" 
+                  type="releaseDate" 
+                  id="releaseDate" 
+                  name="releaseDate" 
                   value={this.state.releaseDate}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="LoanPeriod">Loan Period</InputLabel>
+                <InputLabel htmlFor="loanPeriod">Loan Period</InputLabel>
                 <Input
-                  type="LoanPeriod" 
-                  id="LoanPeriod" 
-                  name="LoanPeriod" 
+                  type="loanPeriod" 
+                  id="loanPeriod" 
+                  name="loanPeriod" 
                   value={this.state.loanPeriod}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <FormControl>
-                <InputLabel htmlFor="LateFee">Late Fee</InputLabel>
+                <InputLabel htmlFor="lateFee">Late Fee</InputLabel>
                 <Input
-                  type="LateFee" 
-                  id="LateFee" 
-                  name="LateFee" 
+                  type="lateFee" 
+                  id="lateFee" 
+                  name="lateFee" 
                   value={this.state.lateFee}
                   onChange={this.handleChange}
                   required
                 />
               </FormControl>
               <RadioGroup defaultValue="" label="Item Type" name="ItemType">
-                <FormControlLabel value="Book" 
+                <FormControlLabel value="book" 
                                   control={<Radio onClick={this.handleRadio}/>} 
-                                  label="Book" />
-                <FormControlLabel value="Movie" 
+                                  label="book" />
+                <FormControlLabel value="movie" 
                                   control={<Radio onClick={this.handleRadio}/>} 
-                                  label="Movie" />
+                                  label="movie" />
               </RadioGroup>
 
-              { this.state.type === "Movie" ?
+              { this.state.type === "movie" ?
                   <FormGroup>
                     <FormControl>
-                      <InputLabel htmlFor="Actor">Actor</InputLabel>
+                      <InputLabel htmlFor="actor">Actor</InputLabel>
                       <Input
-                        type="Actor" 
-                        id="Actor" 
-                        name="Actor" 
+                        type="actor" 
+                        id="actor" 
+                        name="actor" 
                         value={this.state.actor}
                         onChange={this.handleChange}
                         required
                       />
                     </FormControl>
                     <FormControl>
-                      <InputLabel htmlFor="Director">Director</InputLabel>
+                      <InputLabel htmlFor="director">Director</InputLabel>
                       <Input
-                        type="Director" 
-                        id="Director" 
-                        name="Director" 
+                        type="director" 
+                        id="director" 
+                        name="director" 
                         value={this.state.director}
                         onChange={this.handleChange}
                         required
@@ -211,13 +212,13 @@ class AddNewItem extends Component {
                   </FormGroup>
                   : ""
               }
-              { this.state.type === "Book" ?
+              { this.state.type === "book" ?
                 <FormControl>
-                  <InputLabel htmlFor="Author">Author</InputLabel>
+                  <InputLabel htmlFor="author">Author</InputLabel>
                   <Input
-                    type="Author" 
-                    id="Author" 
-                    name="Author" 
+                    type="author" 
+                    id="author" 
+                    name="author" 
                     value={this.state.author}
                     onChange={this.handleChange}
                     required
