@@ -84,6 +84,7 @@ app.get('/api/user-type', (req, res) => {
                             WHERE user.libraryCardNumber="${req.query['card-number']}" 
                             AND user.libraryCardNumber=customer.libraryCardNumber`;
       connection.query(customer_query , (err, row, fields) => {
+        console.log("query", customer_query );
         console.log(row);
         // if there are items in the row array 
         if (row !== undefined && Object.keys(row).length != 0) {
@@ -425,6 +426,12 @@ app.post('/api/submit-new-user', (req, res) => {
       return res.status(400).send({error: 'user already exists'});
     } else {
       connection.query('INSERT INTO user SET ?', newUser);
+      connection.query(`INSERT INTO customer 
+                        VALUES(${newUser.libraryCardNumber}, 
+                          NOW(), 
+                          DATE_ADD(NOW(), INTERVAL 3 YEAR), 
+                          '0.0')`
+                      );
       return res.status(200).send({status: newUser.email + ' registered'});
     }
   });
