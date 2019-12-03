@@ -20,7 +20,11 @@ class RemoveItem extends Component {
     }
   }
 
-
+  componentDidMount() {
+    if (!this.props.authUser) {
+      this.props.history.push('/');
+    }
+  }
 
   handleSubmit = e => {
     e.preventDefault();

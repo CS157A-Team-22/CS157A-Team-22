@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { withRouter } from 'react-router-dom';
 
 import axiosClient from '../config/axiosClient';
 
@@ -21,7 +22,11 @@ class ReadingHistory extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserInfo();
+    if (this.props.authUser) {
+      this.getUserInfo();
+    } else {
+      this.props.history.push('/');
+    }
   }
 
   // hit the API endpoint to get the items from DB 
@@ -98,4 +103,4 @@ class ReadingHistory extends React.Component {
   }
 }
 
-export default ReadingHistory;
+export default withRouter(ReadingHistory);

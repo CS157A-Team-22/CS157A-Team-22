@@ -96,18 +96,18 @@ class App extends React.Component {
                 <Navigation authUser={authUser}>
                   <GenerateReport authUser={authUser}/>
                 </Navigation>
+              </Route>
               <Route path="/check-in">
-                <Navigation><CheckIn/></Navigation>
+                <Navigation authUser={authUser}><CheckIn authUser={authUser}/></Navigation>
               </Route>
               <Route path="/check-out">
-                <Navigation><CheckOut/></Navigation>
+                <Navigation authUser={authUser}><CheckOut authUser={authUser}/></Navigation>
               </Route>
               <Route path="/add-new-item">
-                <Navigation><AddNewItem/></Navigation>
+                <Navigation authUser={authUser}><AddNewItem authUser={authUser}/></Navigation>
               </Route>
               <Route path="/remove-item">
-                <Navigation><RemoveItem/></Navigation>
-
+                <Navigation authUser={authUser}><RemoveItem authUser={authUser}/></Navigation>
               </Route>
             </Switch>
         </Router>
