@@ -64,6 +64,9 @@ export default {
         renewItem(body) {
             return axiosClient.post('/checked-out', body);
 
+        },
+        removeItem(body) {
+            return axiosClient.post('/remove-item', body);
         }
     }
 

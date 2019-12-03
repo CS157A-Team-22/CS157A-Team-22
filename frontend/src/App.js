@@ -11,6 +11,7 @@ import CheckOut from './CheckOut'
 import AddNewItem from './AddNewItem'
 import CheckedOut from './CheckedOut';
 import Fees from './Fees';
+import RemoveItem from './RemoveItem';
 
 
 import {
@@ -141,6 +142,9 @@ class App extends React.Component {
               </Route>
               <Route path="/add-new-item">
                 <Navigation><AddNewItem/></Navigation>
+              </Route>
+              <Route path="/remove-item">
+                <Navigation><RemoveItem/></Navigation>
               </Route>
             </Switch>
         </Router>
