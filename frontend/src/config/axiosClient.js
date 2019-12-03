@@ -33,6 +33,7 @@ export default {
             return axiosClient.get('/user-info', body);
         },
         getUserType(body) {
+            console.log("body in axios", body);
             return axiosClient.get('/user-type', body);
         },
         getCheckedOut(body) {
